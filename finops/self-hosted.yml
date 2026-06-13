@@ -1,0 +1,83 @@
+name: Valhalla FinOps - Self-Hosted Cost Guidance
+description: >-
+  Valhalla is MIT-licensed open-source software with no software licensing costs.
+  All costs are infrastructure-related and depend on the geographic coverage,
+  request volume, and hardware provisioning. This document provides guidance on
+  the cost dimensions of running Valhalla in production.
+license: MIT
+license_url: https://github.com/valhalla/valhalla/blob/master/LICENSE.md
+
+cost_model: infrastructure_only
+vendor_costs: none
+saas_pricing: none
+
+cost_dimensions:
+  - name: Compute
+    description: >-
+      CPU and RAM are the primary cost drivers. Routing computations are
+      CPU-intensive, especially for matrix and isochrone endpoints. RAM
+      requirements scale with the size of the routing graph loaded into memory.
+    guidance:
+      - Planet-wide graph: 16–64 GB RAM recommended
+      - Regional extract (e.g., Western Europe): 8–16 GB RAM typical
+      - Small regional extract (single country): 4–8 GB RAM typical
+      - High-throughput deployments benefit from multiple cores for parallel request handling
+
+  - name: Storage
+    description: >-
+      Valhalla uses tiled graph data derived from OSM. Storage requirements
+      depend on geographic coverage.
+    guidance:
+      - Full planet tiles: ~90–150 GB (varies by costing profiles enabled)
+      - Regional extract: proportionally smaller
+      - Elevation data (Skadi): additional ~15–30 GB for global coverage
+
+  - name: Data Preparation (Tile Building)
+    description: >-
+      Building routing tiles from OSM data (via mjolnir) is a one-time or
+      periodic CPU-intensive job. Planet-wide tile builds can take several hours
+      on high-core-count machines.
+    guidance:
+      - Planet tile build: 4–12 hours on 32-core machine with 64 GB RAM
+      - Regional builds: proportionally faster
+      - Recommended to update tiles weekly or monthly for fresh OSM data
+
+  - name: Bandwidth
+    description: >-
+      Outbound bandwidth for API responses. Routing responses are typically
+      small JSON payloads (a few KB). Isochrone and expansion endpoints
+      can return larger GeoJSON responses.
+    guidance:
+      - Standard routing responses: 1–10 KB per request
+      - Isochrone with polygon: 10–100 KB per request
+      - Expansion responses: potentially several MB for large areas
+
+  - name: Elevation Data
+    description: >-
+      Optional elevation support uses Skadi tiles from the TileZen project
+      hosted on AWS Open Data. Data download is free; storage and processing
+      costs apply.
+    source: https://registry.opendata.aws/tilezen-terrain-tiles/
+    cost: free_to_download
+
+commercial_providers:
+  description: >-
+    Several commercial providers offer managed Valhalla-as-a-service, removing
+    infrastructure management overhead at a per-request or subscription cost.
+  providers:
+    - name: Stadia Maps
+      url: https://docs.stadiamaps.com/routing/
+      notes: Offers Valhalla routing as part of maps API subscription
+    - name: Transitland
+      url: https://www.transit.land/documentation/routing-platform/valhalla/
+      notes: Provides Valhalla routing for transit-aware applications
+    - name: GIS-OPS
+      url: https://gis-ops.com/
+      notes: Offers managed Valhalla hosting and professional services
+
+optimization_tips:
+  - Use regional OSM extracts instead of the full planet if your use case is geographically bounded
+  - Cache frequent routing results to reduce compute costs
+  - Enable request timeouts to prevent runaway computations on malformed requests
+  - Monitor /expansion and /matrix endpoint usage as they are the most compute-intensive
+  - Use protocol buffer format for high-throughput applications to reduce serialization overhead

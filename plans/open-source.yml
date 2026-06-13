@@ -1,0 +1,64 @@
+name: Open Source Self-Hosted
+description: >-
+  Valhalla is fully open source under the MIT License. There are no commercial
+  plans or SaaS pricing tiers for the core project. Users deploy their own
+  Valhalla instances using OpenStreetMap data. A public community demo server
+  hosted by FOSSGIS e.V. is available at valhalla1.openstreetmap.de for
+  development and testing purposes only, subject to fair-use rate limits.
+url: https://github.com/valhalla/valhalla
+pricing_model: free
+pricing_url: https://github.com/valhalla/valhalla/blob/master/LICENSE.md
+plans:
+  - name: Self-Hosted (Free / Open Source)
+    description: >-
+      Deploy Valhalla on your own infrastructure using OSM data. No licensing
+      fees, no request limits, no usage caps. Full access to all API services
+      including route, matrix, isochrone, map matching, elevation, expansion,
+      locate, and status endpoints. Docker images and build scripts available
+      in the official GitHub repository.
+    cost: 0
+    currency: USD
+    billing_period: none
+    features:
+      - All API endpoints (route, matrix, isochrone, map matching, elevation, expansion, locate, status)
+      - All costing models (auto, bicycle, pedestrian, truck, motorcycle, taxi, transit, multimodal)
+      - Full planet or regional OSM data tiles
+      - JSON and protocol buffer response formats
+      - Docker deployment support
+      - C++ native library access
+      - Python and Node.js bindings
+      - Elevation data integration (TileZen/AWS Open Data)
+      - GTFS transit feed integration
+      - Custom traffic data support
+    rate_limits:
+      requests_per_second: unlimited
+      requests_per_day: unlimited
+    notes: >-
+      Hardware requirements scale with the geographic coverage needed.
+      Planet-wide routing requires significant RAM (16–64 GB recommended).
+      Regional extracts can run on much smaller hardware.
+
+  - name: FOSSGIS Public Demo Server (Development Only)
+    description: >-
+      A public Valhalla instance hosted by FOSSGIS e.V. covering the full
+      OpenStreetMap planet graph. Intended for development and testing only.
+      Not suitable for production use or high-volume applications.
+    cost: 0
+    currency: USD
+    billing_period: none
+    base_url: https://valhalla1.openstreetmap.de
+    features:
+      - Full planet routing graph
+      - All standard API endpoints
+      - HTTP GET and POST support
+    rate_limits:
+      requests_per_second: 1
+      requests_per_second_global: 100
+    restrictions:
+      - Not for production or third-party user-facing apps
+      - Apps with mass deployments must include X-Client-Id header
+      - Computationally expensive endpoints (expansion, centroid, matrix) subject to stricter limits
+      - Fair-use policy enforced; violators may be blocked
+    notes: >-
+      Production deployments should use self-hosted instances or commercial
+      providers (e.g., Stadia Maps, Transitland) that offer managed Valhalla services.

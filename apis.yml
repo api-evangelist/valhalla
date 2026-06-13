@@ -1,0 +1,260 @@
+name: Valhalla
+description: >-
+  Valhalla is an open-source routing engine and library suite for OpenStreetMap
+  data. It provides turn-by-turn navigation, isochrone computation, time-distance
+  matrix analysis, map matching, elevation sampling, optimized routing (TSP), and
+  graph expansion via a REST API. Valhalla supports multiple travel modes including
+  auto, bicycle, pedestrian, transit, truck, motorcycle, and motor scooter. It uses
+  a tiled hierarchical data structure for efficient offline routing and regional
+  extracts, with dynamic costing via a plugin architecture.
+image: https://valhalla.github.io/valhalla/images/valhalla.png
+tags:
+  - Routing
+  - Navigation
+  - OpenStreetMap
+  - Mapping
+  - Geospatial
+  - Directions
+  - Isochrones
+  - Travel
+  - Transportation
+  - Open Source
+created: '2026-06-13'
+modified: '2026-06-13'
+url: https://raw.githubusercontent.com/api-evangelist/valhalla/refs/heads/main/apis.yml
+specificationVersion: '0.19'
+apis:
+  - name: Valhalla Route API
+    description: >-
+      Turn-by-turn routing service that guides users between two or more points
+      by car, bike, foot, and multimodal combinations. Supports multiple costing
+      models including auto, bicycle, pedestrian, truck, motorcycle, motor scooter,
+      taxi, and multimodal (pedestrian + transit).
+    image: https://valhalla.github.io/valhalla/images/valhalla.png
+    humanURL: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+    baseURL: https://valhalla1.openstreetmap.de
+    tags:
+      - Routing
+      - Navigation
+      - Turn-by-Turn
+      - Directions
+    properties:
+      - type: Documentation
+        url: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+      - type: OpenAPI
+        url: https://valhalla.github.io/valhalla/api/openapi/
+    contact:
+      - FN: Valhalla Project
+        url: https://github.com/valhalla/valhalla
+        email: ''
+
+  - name: Valhalla Optimized Route API
+    description: >-
+      Solves the Travelling Salesman Problem (TSP) by computing an optimized path
+      through multiple input locations. The service reorders intermediate waypoints
+      for maximum efficiency, starting at the first and ending at the last location.
+      Supports auto, bicycle, and pedestrian costing models.
+    image: https://valhalla.github.io/valhalla/images/valhalla.png
+    humanURL: https://valhalla.github.io/valhalla/api/optimized/api-reference/
+    baseURL: https://valhalla1.openstreetmap.de
+    tags:
+      - Routing
+      - Optimization
+      - TSP
+      - Travelling Salesman
+    properties:
+      - type: Documentation
+        url: https://valhalla.github.io/valhalla/api/optimized/api-reference/
+      - type: OpenAPI
+        url: https://valhalla.github.io/valhalla/api/openapi/
+    contact:
+      - FN: Valhalla Project
+        url: https://github.com/valhalla/valhalla
+        email: ''
+
+  - name: Valhalla Matrix API
+    description: >-
+      Computes time and distance matrices between sets of origins and destinations.
+      Supports one-to-many, many-to-one, and many-to-many queries. Returns
+      null for unreachable location pairs. Useful for logistics, delivery
+      optimization, and accessibility analysis.
+    image: https://valhalla.github.io/valhalla/images/valhalla.png
+    humanURL: https://valhalla.github.io/valhalla/api/matrix/api-reference/
+    baseURL: https://valhalla1.openstreetmap.de
+    tags:
+      - Matrix
+      - Time-Distance
+      - Logistics
+      - Accessibility
+    properties:
+      - type: Documentation
+        url: https://valhalla.github.io/valhalla/api/matrix/api-reference/
+      - type: OpenAPI
+        url: https://valhalla.github.io/valhalla/api/openapi/
+    contact:
+      - FN: Valhalla Project
+        url: https://github.com/valhalla/valhalla
+        email: ''
+
+  - name: Valhalla Isochrone API
+    description: >-
+      Calculates isochrones (reachable areas within a given time or distance) and
+      isodistances from one or more locations. Returns GeoJSON polygons or lines.
+      Supports auto, bicycle, pedestrian, and multimodal costing. Output can also
+      be returned as GeoTIFF raster format.
+    image: https://valhalla.github.io/valhalla/images/valhalla.png
+    humanURL: https://valhalla.github.io/valhalla/api/isochrone/api-reference/
+    baseURL: https://valhalla1.openstreetmap.de
+    tags:
+      - Isochrones
+      - Reachability
+      - GeoJSON
+      - Accessibility
+    properties:
+      - type: Documentation
+        url: https://valhalla.github.io/valhalla/api/isochrone/api-reference/
+      - type: OpenAPI
+        url: https://valhalla.github.io/valhalla/api/openapi/
+    contact:
+      - FN: Valhalla Project
+        url: https://github.com/valhalla/valhalla
+        email: ''
+
+  - name: Valhalla Map Matching API
+    description: >-
+      Matches GPS traces and coordinate sequences to the road network mapped in
+      OpenStreetMap. Provides two modes: trace_route (turns a GPS trace into a
+      route with narrative instructions) and trace_attributes (returns edge and
+      node attributes matched along the trace). All requests should use HTTP POST.
+    image: https://valhalla.github.io/valhalla/images/valhalla.png
+    humanURL: https://valhalla.github.io/valhalla/api/map-matching/api-reference/
+    baseURL: https://valhalla1.openstreetmap.de
+    tags:
+      - Map Matching
+      - GPS
+      - Trace
+      - Navigation
+    properties:
+      - type: Documentation
+        url: https://valhalla.github.io/valhalla/api/map-matching/api-reference/
+      - type: OpenAPI
+        url: https://valhalla.github.io/valhalla/api/openapi/
+    contact:
+      - FN: Valhalla Project
+        url: https://github.com/valhalla/valhalla
+        email: ''
+
+  - name: Valhalla Elevation API
+    description: >-
+      Returns elevation data along a path or at specified locations. Accepts
+      coordinate arrays or encoded polylines and returns height values in meters
+      or feet. Supports cumulative distance ranges and configurable resampling
+      intervals along the path.
+    image: https://valhalla.github.io/valhalla/images/valhalla.png
+    humanURL: https://valhalla.github.io/valhalla/api/elevation/api-reference/
+    baseURL: https://valhalla1.openstreetmap.de
+    tags:
+      - Elevation
+      - Terrain
+      - Height
+      - Geospatial
+    properties:
+      - type: Documentation
+        url: https://valhalla.github.io/valhalla/api/elevation/api-reference/
+      - type: OpenAPI
+        url: https://valhalla.github.io/valhalla/api/openapi/
+    contact:
+      - FN: Valhalla Project
+        url: https://github.com/valhalla/valhalla
+        email: ''
+
+  - name: Valhalla Expansion API
+    description: >-
+      Returns a GeoJSON representation of the routing graph traversal from a
+      given location, showing the edges explored during shortest-path computation.
+      Useful for visualizing and debugging routing behavior. Note: this endpoint
+      is subject to stricter rate limiting on the public demo server.
+    image: https://valhalla.github.io/valhalla/images/valhalla.png
+    humanURL: https://valhalla.github.io/valhalla/api/expansion/api-reference/
+    baseURL: https://valhalla1.openstreetmap.de
+    tags:
+      - Expansion
+      - Graph
+      - GeoJSON
+      - Debugging
+    properties:
+      - type: Documentation
+        url: https://valhalla.github.io/valhalla/api/expansion/api-reference/
+      - type: OpenAPI
+        url: https://valhalla.github.io/valhalla/api/openapi/
+    contact:
+      - FN: Valhalla Project
+        url: https://github.com/valhalla/valhalla
+        email: ''
+
+  - name: Valhalla Locate API
+    description: >-
+      Provides detailed metadata about graph nodes and edges near a given
+      coordinate. Returns snapped node information, edge attributes, and road
+      network properties for analysis and debugging of routing graph data.
+    image: https://valhalla.github.io/valhalla/images/valhalla.png
+    humanURL: https://valhalla.github.io/valhalla/api/locate/api-reference/
+    baseURL: https://valhalla1.openstreetmap.de
+    tags:
+      - Locate
+      - Graph
+      - Metadata
+      - Debugging
+    properties:
+      - type: Documentation
+        url: https://valhalla.github.io/valhalla/api/locate/api-reference/
+      - type: OpenAPI
+        url: https://valhalla.github.io/valhalla/api/openapi/
+    contact:
+      - FN: Valhalla Project
+        url: https://github.com/valhalla/valhalla
+        email: ''
+
+  - name: Valhalla Status API
+    description: >-
+      Returns information about the running Valhalla server instance, including
+      tileset availability and configuration details. Useful for health checks
+      and monitoring the operational status of a Valhalla deployment.
+    image: https://valhalla.github.io/valhalla/images/valhalla.png
+    humanURL: https://valhalla.github.io/valhalla/
+    baseURL: https://valhalla1.openstreetmap.de
+    tags:
+      - Status
+      - Health
+      - Monitoring
+    properties:
+      - type: Documentation
+        url: https://valhalla.github.io/valhalla/
+      - type: OpenAPI
+        url: https://valhalla.github.io/valhalla/api/openapi/
+    contact:
+      - FN: Valhalla Project
+        url: https://github.com/valhalla/valhalla
+        email: ''
+
+common:
+  - type: GitHub
+    url: https://github.com/valhalla/valhalla
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/
+  - type: OpenAPI
+    url: https://valhalla.github.io/valhalla/api/openapi/
+  - type: DemoServer
+    url: https://valhalla.openstreetmap.de/
+  - type: License
+    url: https://github.com/valhalla/valhalla/blob/master/LICENSE.md
+  - type: RateLimits
+    url: https://raw.githubusercontent.com/api-evangelist/valhalla/refs/heads/main/rate-limits/openstreetmap-de.yml
+  - type: Plans
+    url: https://raw.githubusercontent.com/api-evangelist/valhalla/refs/heads/main/plans/open-source.yml
+  - type: FinOps
+    url: https://raw.githubusercontent.com/api-evangelist/valhalla/refs/heads/main/finops/self-hosted.yml
+
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

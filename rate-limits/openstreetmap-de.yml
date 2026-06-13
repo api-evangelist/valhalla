@@ -1,0 +1,83 @@
+name: FOSSGIS Public Demo Server Rate Limits
+description: >-
+  Rate limits applied to the public Valhalla demo server hosted by FOSSGIS e.V.
+  at valhalla1.openstreetmap.de. This server provides a full-planet OSM routing
+  graph for development and testing purposes. Rate limits are enforced to ensure
+  fair access for all users of this shared community resource.
+source: https://github.com/valhalla/valhalla/discussions/3373
+server: https://valhalla1.openstreetmap.de
+operator: FOSSGIS e.V.
+intended_use: development and testing only
+
+limits:
+  - name: Per-User Request Rate
+    type: rate
+    scope: per_user
+    limit: 1
+    unit: requests_per_second
+    description: Maximum of 1 request per user per second across all endpoints.
+
+  - name: Global Server Throughput
+    type: rate
+    scope: global
+    limit: 100
+    unit: requests_per_second
+    description: >-
+      Total server throughput is capped at 100 requests per second across all
+      users combined.
+
+  - name: Expansion Endpoint (Strict)
+    type: rate
+    scope: per_user
+    endpoint: /expansion
+    limit: reduced
+    description: >-
+      The /expansion endpoint is subject to stricter rate limiting due to high
+      computational cost. Exact limit not publicly specified; expect lower
+      throughput than other endpoints.
+
+  - name: Centroid Endpoint (Strict)
+    type: rate
+    scope: per_user
+    endpoint: /centroid
+    limit: reduced
+    description: >-
+      The /centroid endpoint is subject to stricter rate limiting due to high
+      computational cost.
+
+  - name: Matrix Endpoint (Strict)
+    type: rate
+    scope: per_user
+    endpoint: /sources_to_targets
+    limit: reduced
+    description: >-
+      The /sources_to_targets (matrix) endpoint is subject to stricter rate
+      limiting for large requests due to high computational cost.
+
+policies:
+  - name: Fair Use Policy
+    description: >-
+      The public demo server operates under a fair-use policy similar to the
+      OSRM and Nominatim demo servers. Abuse or excessive usage may result in
+      IP blocks without prior notice.
+
+  - name: Client Identification
+    description: >-
+      Applications making requests on behalf of end users (mobile, web, desktop)
+      should include an identifying User-Agent header and are asked to notify
+      the FOSSGIS team via GitHub Discussions.
+    header: User-Agent
+    recommended_header: X-Client-Id
+
+  - name: No Production Use
+    description: >-
+      The public demo server is explicitly not intended for production or
+      commercial deployments. Organizations building user-facing products
+      should self-host or use a commercial managed Valhalla provider.
+
+self_hosting:
+  note: >-
+    For production workloads, deploy your own Valhalla instance. Self-hosted
+    deployments have no inherent rate limits beyond the hardware you provision.
+  docker_hub: https://hub.docker.com/r/valhalla/valhalla
+  github: https://github.com/valhalla/valhalla
