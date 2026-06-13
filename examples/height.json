@@ -1,0 +1,28 @@
+{
+  "description": "Example /height request to get elevation data along a hiking path in Yosemite Valley.",
+  "request": {
+    "shape": [
+      { "lat": 37.7456, "lon": -119.5936 },
+      { "lat": 37.7466, "lon": -119.5870 },
+      { "lat": 37.7479, "lon": -119.5808 },
+      { "lat": 37.7495, "lon": -119.5748 }
+    ],
+    "range": true,
+    "height_precision": 1,
+    "resample_distance": 50
+  },
+  "response_summary": {
+    "shape": [
+      { "lat": 37.7456, "lon": -119.5936 },
+      { "lat": 37.7466, "lon": -119.5870 },
+      { "lat": 37.7479, "lon": -119.5808 },
+      { "lat": 37.7495, "lon": -119.5748 }
+    ],
+    "range_height": [
+      [0, 1213.4],
+      [534.2, 1218.7],
+      [1067.1, 1225.3],
+      [1598.5, 1231.9]
+    ]
+  }
+}

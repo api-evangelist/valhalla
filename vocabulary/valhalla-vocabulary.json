@@ -1,0 +1,124 @@
+{
+  "vocabulary": "Valhalla Routing API",
+  "version": "3.x",
+  "source": "https://valhalla.github.io/valhalla/",
+  "description": "Key terms and concepts used in the Valhalla open-source routing engine API.",
+  "terms": [
+    {
+      "term": "costing",
+      "definition": "The travel mode model used to compute route costs. Determines how edges are weighted based on road attributes, speed, and user preferences. Available models include auto, bicycle, pedestrian, truck, motorcycle, motor_scooter, bus, taxi, multimodal, and bikeshare."
+    },
+    {
+      "term": "location",
+      "definition": "A geographic coordinate (lat/lon) used as an input point for routing. Has a type (break, through, via, break_through) controlling how the route is split at that point."
+    },
+    {
+      "term": "break",
+      "definition": "A location type that starts or ends a route leg. Allows U-turns. The first and last locations of any route are always forced to break type."
+    },
+    {
+      "term": "through",
+      "definition": "A location type that the route passes through without stopping. Does not create a leg-break. U-turns are not allowed at through locations."
+    },
+    {
+      "term": "via",
+      "definition": "A location type that generates a maneuver instruction but does not split the route into legs. U-turns are allowed."
+    },
+    {
+      "term": "break_through",
+      "definition": "A location type like break but does not allow U-turns at the location."
+    },
+    {
+      "term": "isochrone",
+      "definition": "A contour line connecting all points reachable from a given location within a specified travel time or distance. Valhalla returns these as GeoJSON polygons or linestrings."
+    },
+    {
+      "term": "isodistance",
+      "definition": "A contour line connecting all points reachable from a given location within a specified travel distance. Specified via the distance property of a contour object."
+    },
+    {
+      "term": "contour",
+      "definition": "A single isochrone or isodistance limit. Defined by a time (minutes) or distance (kilometers) value and an optional color for rendering."
+    },
+    {
+      "term": "map matching",
+      "definition": "The process of matching a GPS trace or coordinate sequence to the underlying road network. Valhalla provides trace_route (with turn-by-turn directions) and trace_attributes (edge/node data) matching modes."
+    },
+    {
+      "term": "trace_route",
+      "definition": "Map matching mode that converts a GPS trace into a routable path with narrative turn-by-turn instructions."
+    },
+    {
+      "term": "trace_attributes",
+      "definition": "Map matching mode that returns detailed edge and node attributes for each segment of the matched GPS trace."
+    },
+    {
+      "term": "edge_walk",
+      "definition": "A map matching algorithm that exactly walks edges of the Valhalla graph. Best used when the trace comes from a prior Valhalla route output."
+    },
+    {
+      "term": "map_snap",
+      "definition": "A map matching algorithm using probabilistic Hidden Markov Model (HMM) matching. Preferred for real GPS traces that may not precisely follow road centerlines."
+    },
+    {
+      "term": "walk_or_snap",
+      "definition": "Default map matching mode. Tries edge_walk first; falls back to map_snap if edge walking fails."
+    },
+    {
+      "term": "sources_to_targets",
+      "definition": "The time-distance matrix endpoint that computes travel time and distance between all combinations of origin (source) and destination (target) locations."
+    },
+    {
+      "term": "expansion",
+      "definition": "A diagnostic endpoint that returns a GeoJSON representation of all edges visited during Dijkstra's shortest-path expansion from a given location. Useful for visualizing routing behavior."
+    },
+    {
+      "term": "optimized_route",
+      "definition": "Solves the Travelling Salesman Problem (TSP) — computes the most efficient ordering of intermediate waypoints. The route always starts at the first and ends at the last location."
+    },
+    {
+      "term": "tile",
+      "definition": "Valhalla stores the routing graph in tiles using a hierarchical structure. Graph tiles can also be served as Mapbox Vector Tiles (MVT) for visualization."
+    },
+    {
+      "term": "polyline6",
+      "definition": "Encoded polyline format with 6 decimal places of precision. The default shape encoding format in Valhalla responses."
+    },
+    {
+      "term": "polyline5",
+      "definition": "Encoded polyline format with 5 decimal places of precision. Compatible with Google's polyline encoding standard."
+    },
+    {
+      "term": "costing_options",
+      "definition": "Per-costing-model configuration object that allows fine-tuning of how the routing engine weights different road characteristics such as use of highways, tolls, hills, and surface types."
+    },
+    {
+      "term": "ManeuverType",
+      "definition": "An integer code in route responses indicating the type of turn or navigation action at a maneuver point (e.g. 1=Start, 2=StartRight, 3=StartLeft, 4=Destination, 9=SlightRight, 24=RoundaboutEnter)."
+    },
+    {
+      "term": "road class",
+      "definition": "Classification of roads in the routing graph: motorway, trunk, primary, secondary, tertiary, unclassified, residential, service_other. Used in search filters and cost modeling."
+    },
+    {
+      "term": "shape_match",
+      "definition": "Parameter controlling which map matching algorithm is used for trace endpoints: edge_walk, map_snap, or walk_or_snap."
+    },
+    {
+      "term": "linear_cost_factors",
+      "definition": "Custom cost multipliers applied to specific road segments during routing, specified as encoded polylines or GeoJSON LineString features with a factor property."
+    },
+    {
+      "term": "recostings",
+      "definition": "Re-score the found route path under additional named costing models without re-routing. Returns alternative time/distance estimates for the same geometric path."
+    },
+    {
+      "term": "speed_types",
+      "definition": "Array of speed data sources to use for costing: current (live traffic), freeflow (night average), constrained (day average), predicted (historical 5-min buckets). Requires date_time when using freeflow, constrained, or predicted."
+    },
+    {
+      "term": "HardExclusions",
+      "definition": "Experimental costing option (requires server config allow_hard_exclusions=true) to completely forbid specific infrastructure types mid-route: bridges, tunnels, tolls, highways, ferries."
+    }
+  ]
+}

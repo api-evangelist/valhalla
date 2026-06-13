@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/valhalla/main/json-schema/isochrone-request.json",
+  "title": "IsochroneRequest",
+  "description": "Request body for the Valhalla /isochrone endpoint. Returns GeoJSON polygons or lines representing reachable areas within given time or distance limits.",
+  "type": "object",
+  "required": ["locations", "costing", "contours"],
+  "properties": {
+    "locations": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "description": "Origin locations for the isochrone computation.",
+      "items": { "$ref": "location.json" }
+    },
+    "costing": {
+      "type": "string",
+      "enum": ["auto", "bicycle", "pedestrian", "truck", "bus", "taxi", "motor_scooter", "motorcycle", "multimodal", "bikeshare", "auto_pedestrian"],
+      "description": "Travel mode costing model."
+    },
+    "contours": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "description": "Contour limits defining the isochrone rings.",
+      "items": {
+        "type": "object",
+        "description": "A single contour. Specify either time or distance, not both.",
+        "properties": {
+          "time": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "Travel time limit in minutes."
+          },
+          "distance": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "Distance limit in kilometers."
+          },
+          "color": {
+            "type": "string",
+            "description": "Hex color without '#' for rendering (e.g. 'ff0000')."
+          }
+        }
+      }
+    },
+    "id": {
+      "type": "string",
+      "description": "Arbitrary request identifier echoed in the response."
+    },
+    "polygons": {
+      "type": "boolean",
+      "default": false,
+      "description": "Return polygon geometries instead of linestrings."
+    },
+    "denoise": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "default": 1.0,
+      "description": "Factor to remove smaller contours relative to the largest contour's area."
+    },
+    "generalize": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Douglas-Peucker generalization tolerance in meters."
+    },
+    "show_locations": {
+      "type": "boolean",
+      "default": false,
+      "description": "Include input and snapped locations as MultiPoint features in the GeoJSON output."
+    },
+    "reverse": {
+      "type": "boolean",
+      "default": false,
+      "description": "Compute inbound (reverse) isochrone — areas that can reach the location within the time/distance limit."
+    },
+    "units": {
+      "type": "string",
+      "enum": ["km", "miles", "mi"],
+      "default": "km"
+    },
+    "date_time": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "integer",
+          "enum": [0, 1, 2, 3],
+          "description": "0=current, 1=depart_at, 2=arrive_by, 3=invariant"
+        },
+        "value": {
+          "type": "string",
+          "description": "ISO 8601 datetime string (YYYY-MM-DDTHH:MM)."
+        }
+      }
+    }
+  }
+}

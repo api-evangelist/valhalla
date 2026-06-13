@@ -1,0 +1,50 @@
+{
+  "description": "Example /route request for a car trip from Washington DC to Philadelphia via auto costing.",
+  "request": {
+    "locations": [
+      { "lat": 38.8977, "lon": -77.0366, "name": "White House, Washington DC" },
+      { "lat": 39.9526, "lon": -75.1652, "name": "City Hall, Philadelphia" }
+    ],
+    "costing": "auto",
+    "costing_options": {
+      "auto": {
+        "use_highways": 0.8,
+        "use_tolls": 0.5
+      }
+    },
+    "units": "miles",
+    "language": "en-US",
+    "directions_type": "instructions",
+    "alternates": 1
+  },
+  "response_summary": {
+    "trip": {
+      "summary": {
+        "length": 141.2,
+        "time": 8520
+      },
+      "legs": [
+        {
+          "summary": {
+            "length": 141.2,
+            "time": 8520
+          },
+          "shape": "encoded_polyline_here",
+          "maneuvers": [
+            {
+              "type": 1,
+              "instruction": "Drive northeast on Pennsylvania Avenue Northwest.",
+              "street_names": ["Pennsylvania Avenue Northwest"],
+              "time": 60,
+              "length": 0.4
+            }
+          ]
+        }
+      ],
+      "status": 0,
+      "status_message": "Found route between points",
+      "units": "miles",
+      "language": "en-US"
+    }
+  }
+}

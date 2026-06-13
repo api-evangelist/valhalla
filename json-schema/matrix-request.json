@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/valhalla/main/json-schema/matrix-request.json",
+  "title": "MatrixRequest",
+  "description": "Request body for the Valhalla /sources_to_targets endpoint. Computes time and distance matrices between sets of origins and destinations.",
+  "type": "object",
+  "required": ["sources", "targets", "costing"],
+  "properties": {
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Origin locations.",
+      "items": { "$ref": "location.json" }
+    },
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Destination locations.",
+      "items": { "$ref": "location.json" }
+    },
+    "costing": {
+      "type": "string",
+      "enum": ["auto", "bicycle", "pedestrian", "truck", "bus", "taxi", "motor_scooter", "motorcycle", "multimodal", "bikeshare", "auto_pedestrian"],
+      "description": "Travel mode costing model."
+    },
+    "costing_options": {
+      "type": "object",
+      "description": "Per-costing-model fine-tuning options."
+    },
+    "id": {
+      "type": "string",
+      "description": "Arbitrary request identifier echoed in the response."
+    },
+    "units": {
+      "type": "string",
+      "enum": ["km", "miles", "mi"],
+      "default": "km"
+    },
+    "verbose": {
+      "type": "boolean",
+      "default": true,
+      "description": "Include detailed per-cell metadata in the response."
+    },
+    "matrix_locations": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Early-exit after finding this many targets (TDMatrix only)."
+    },
+    "expansion_max_distance": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100000,
+      "default": 0,
+      "description": "Maximum path distance in meters. Source-target pairs exceeding this are returned as unreachable."
+    },
+    "date_time": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "integer",
+          "enum": [0, 1, 2, 3]
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

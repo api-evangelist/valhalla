@@ -1,0 +1,52 @@
+{
+  "description": "Example /sources_to_targets request computing a bicycle time-distance matrix between two origins and two destinations in San Francisco.",
+  "request": {
+    "sources": [
+      { "lat": 37.7749, "lon": -122.4194, "name": "San Francisco City Hall" },
+      { "lat": 37.7955, "lon": -122.3937, "name": "Ferry Building" }
+    ],
+    "targets": [
+      { "lat": 37.8199, "lon": -122.4783, "name": "Golden Gate Bridge" },
+      { "lat": 37.7694, "lon": -122.4862, "name": "Golden Gate Park" }
+    ],
+    "costing": "bicycle",
+    "units": "km"
+  },
+  "response_summary": {
+    "sources_to_targets": [
+      [
+        {
+          "from_index": 0,
+          "to_index": 0,
+          "time": 2580,
+          "distance": 9.7,
+          "date_time": "current"
+        },
+        {
+          "from_index": 0,
+          "to_index": 1,
+          "time": 2100,
+          "distance": 7.8,
+          "date_time": "current"
+        }
+      ],
+      [
+        {
+          "from_index": 1,
+          "to_index": 0,
+          "time": 2340,
+          "distance": 8.9,
+          "date_time": "current"
+        },
+        {
+          "from_index": 1,
+          "to_index": 1,
+          "time": 2760,
+          "distance": 10.5,
+          "date_time": "current"
+        }
+      ]
+    ],
+    "units": "km"
+  }
+}
