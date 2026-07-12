@@ -238,6 +238,8 @@ apis:
         email: ''
 
 common:
+  - type: DomainSecurity
+    url: security/valhalla-domain-security.yml
   - type: GitHub
     url: https://github.com/valhalla/valhalla
   - type: Documentation
