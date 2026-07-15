@@ -238,6 +238,8 @@ apis:
         email: ''
 
 common:
+  - type: AgenticAccess
+    url: agentic-access/valhalla-agentic-access.yml
   - type: DomainSecurity
     url: security/valhalla-domain-security.yml
   - type: GitHub
