@@ -1,0 +1,310 @@
+openapi: 3.1.0
+info:
+  title: Valhalla Routing Expansion Height API
+  version: 3.x
+  description: 'Open-source routing engine for OpenStreetMap data.
+
+    All POST endpoints accept JSON (some also protobuf with `Content-Type: application/x-protobuf`).
+
+    '
+  license:
+    name: MIT
+    url: https://github.com/valhalla/valhalla/blob/master/COPYING
+servers:
+- url: https://valhalla1.openstreetmap.de
+security: []
+tags:
+- name: Height
+paths:
+  /height:
+    post:
+      operationId: height
+      summary: /height
+      description: Elevation at points or along a path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HeightRequest'
+      responses:
+        '200':
+          description: Elevation result
+          content:
+            application/json:
+              examples:
+                default:
+                  externalValue: ./examples/height.json
+        '400':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+      tags:
+      - Height
+components:
+  schemas:
+    SearchFilter:
+      type: object
+      description: Optional filters to exclude candidate edges based on their attribution.
+      properties:
+        min_road_class:
+          $ref: '#/components/schemas/RoadClass'
+          default: service_other
+          description: Lowest road class allowed.
+        max_road_class:
+          $ref: '#/components/schemas/RoadClass'
+          default: motorway
+          description: Highest road class allowed.
+        exclude_tunnel:
+          type: boolean
+          default: false
+          description: Whether to exclude roads marked as tunnels.
+        exclude_bridge:
+          type: boolean
+          default: false
+          description: Whether to exclude roads marked as bridges.
+        exclude_toll:
+          type: boolean
+          default: false
+          description: Whether to exclude roads marked as toll roads.
+        exclude_ramp:
+          type: boolean
+          default: false
+          description: Whether to exclude roads marked as ramps.
+        exclude_ferry:
+          type: boolean
+          default: false
+          description: Whether to exclude ferry routes.
+        exclude_closures:
+          type: boolean
+          default: true
+          description: When false, closed roads are allowed for this location.
+        level:
+          type: number
+          description: If specified, will only consider edges that are on or traverse the passed floor level. Useful for indoor routing. It will set `search_cutoff` to a default value of 300 meters if no cutoff value is passed. Additionally, if a `search_cutoff` is passed, it will be clamped to 1000 meters.
+    ShapeFormat:
+      type: string
+      enum:
+      - polyline6
+      - polyline5
+      - geojson
+      - no_shape
+      description: Not all formats are supported by all endpoints, e.g. `no_shape` is not valid for isochrone.
+      default: polyline6
+      example: polyline6
+    Location:
+      type: object
+      required:
+      - lat
+      - lon
+      properties:
+        lat:
+          type: number
+          minimum: -90
+          maximum: 90
+        lon:
+          type: number
+          minimum: -180
+          maximum: 180
+        type:
+          type: string
+          enum:
+          - break
+          - through
+          - via
+          - break_through
+          example: break
+          default: break
+          description: First and last location are always forced to `break`.
+          x-enumDescriptions:
+            break: Stop here; starts or ends a route leg. Allows U-turns.
+            through: Pass through without stopping. No U-turn; keeps direction of travel.
+            via: Waypoint with a maneuver instruction but no leg-break. Allows U-turns.
+            break_through: Like `break` but does not allow U-turns at the location.
+        name:
+          type: string
+          description: Label echoed in the response.
+        street:
+          type: string
+          description: Street address hint for snapping.
+        date_time:
+          type: string
+          description: Per-location ISO 8601 datetime override, in the format `YYYY-MM-DDTHH:MM`, e.g. `2016-07-03T08:06`.
+        heading:
+          type: integer
+          minimum: 0
+          maximum: 360
+          description: Preferred approach heading in degrees.
+        heading_tolerance:
+          type: integer
+          x-rad-min: 0
+          x-rad-max: 180
+          x-rad-default: 60
+          description: 'How close in degrees a given street''s angle must be in order for it to be considered as in the same direction of the `heading` parameter.  The default value is service configuration dependent (60 by default).
+
+            '
+        preferred_layer:
+          type: integer
+          x-rad-min: -1
+          x-rad-max: 5
+          description: 'If set, edges whose layer does not match this value are discarded from candidate search. Note that this is a "soft" filter, meaning if no other candidates are found, Valhalla will fall back to including edges that did not match this filter.
+
+            '
+        node_snap_tolerance:
+          type: number
+          minimum: 0
+          x-rad-max: 100
+          x-rad-default: 5
+          description: Snap-to-node distance tolerance in meters. The default value is service dependent (5 by default).
+        minimum_reachability:
+          type: integer
+          minimum: 0
+          x-rad-max: 250
+          default: 50
+          description: Minimum number of reachable edges for a snap candidate. The default and max values are service configuration dependent (50 and 100 by default, respectively).
+        radius:
+          type: integer
+          minimum: 0
+          x-rad-max: 200
+          x-rad-default: 0
+          description: 'Candidate search radius in meters: all viable edge candidates within the radius are correlated. If none are found, the best  one outside the radius is correlated. The default is service dependent, and defaults to 0 (only the closest edge is considered as candidate). The max value is service configuration dependent (200 by default).
+
+            '
+        search_cutoff:
+          type: integer
+          minimum: 0
+          x-rad-min: 10000
+          x-rad-max: 100000
+          x-rad-default: 35000
+          description: Hard cutoff for candidate search in meters. Default is service configuration dependent (35000 by default).
+        rank_candidates:
+          type: boolean
+          default: true
+          description: Rank snap candidates by distance to input.
+        preferred_side:
+          type: string
+          default: either
+          example: opposite
+          enum:
+          - same
+          - opposite
+          - either
+          description: Preferred side of road to snap to.
+        display_lat:
+          type: number
+          minimum: -90
+          maximum: 90
+          description: 'Latitude of the map location in degrees. If provided the `lat` and `lon` parameters will be treated as the routing location and the  `display_lat` and `display_lon` will be used to determine the side of street. Both `display_lat` and `display_lon` must be provided and valid to achieve the desired effect.
+
+            '
+        display_lon:
+          type: number
+          minimum: -180
+          maximum: 180
+          description: 'Latitude of the map location in degrees. If provided the `lat` and `lon` parameters will be treated as the routing location and the  `display_lat` and `display_lon` will be used to determine the side of street. Both `display_lat` and `display_lon` must be provided and valid to achieve the desired effect.
+
+            '
+        street_side_tolerance:
+          type: integer
+          minimum: 0
+          x-rad-max: 50
+          x-rad-default: 5
+          description: 'If your input coordinate is less than this tolerance away from the edge centerline then we set your side of  street to none otherwise your side of street will be left or right depending on direction of travel. The default value is service configuration dependent (5 by default).
+
+            '
+        street_side_max_distance:
+          type: integer
+          minimum: 0
+          x-rad-max: 10000
+          x-rad-default: 1000
+          description: 'The max distance in meters that the input coordinates or display ll can be from the edge centerline for them to be used for determining the side of  street. Beyond this distance the side of street is set to none. The default value is service configuration dependent (1000 by default).
+
+            '
+        street_side_cutoff:
+          default: service_other
+          $ref: '#/components/schemas/RoadClass'
+          description: Ignore side preference for roads above this class.
+        waiting:
+          type: number
+          minimum: 0
+          x-rad-max: 10000
+          description: Waiting time in seconds at this stop (break/break_through only, not origin/destination).
+        search_filter:
+          $ref: '#/components/schemas/SearchFilter'
+          description: 'A set of optional filters to exclude candidate edges based on their attribution. Note that these are "hard" filters, i.e. it''s possible to end up  with no location candidates if these filters are too restricted.
+
+            '
+    HeightRequest:
+      type: object
+      properties:
+        id:
+          type: string
+        shape:
+          type: array
+          minItems: 1
+          x-rad-max-items: 50
+          items:
+            $ref: '#/components/schemas/Location'
+          description: Points at which to query elevation. Mutually exclusive with encoded_polyline.
+        encoded_polyline:
+          type: string
+          description: Polyline6 (default) or polyline5 (with shape_format=polyline5) encoded shape.
+        shape_format:
+          $ref: '#/components/schemas/ShapeFormat'
+        range:
+          type: boolean
+          default: false
+          description: Return cumulative distance alongside elevation values.
+        height_precision:
+          type: integer
+          enum:
+          - 0
+          - 1
+          - 2
+          default: 0
+          description: Decimal places in elevation values.
+        resample_distance:
+          type: number
+          minimum: 0
+          x-rad-max: 100
+          description: Resample the shape at this interval in meters before querying elevation.
+    RoadClass:
+      type: string
+      enum:
+      - motorway
+      - trunk
+      - primary
+      - secondary
+      - tertiary
+      - unclassified
+      - residential
+      - service_other
+      example: primary
+  responses:
+    RateLimited:
+      description: 'Rate limit exceeded. The public service enforces a per-user limit of
+
+        1 request per second and a global limit of 100 requests per second.
+
+        The body is nginx''s default 429 HTML page.
+
+        '
+      content:
+        text/html:
+          schema:
+            type: string
+    Error:
+      description: Request error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error_code:
+                type: integer
+              error:
+                type: string
+              status_code:
+                type: integer
+              status:
+                type: string

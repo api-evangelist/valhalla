@@ -1,0 +1,91 @@
+openapi: 3.1.0
+info:
+  title: Valhalla Routing Expansion Tile API
+  version: 3.x
+  description: 'Open-source routing engine for OpenStreetMap data.
+
+    All POST endpoints accept JSON (some also protobuf with `Content-Type: application/x-protobuf`).
+
+    '
+  license:
+    name: MIT
+    url: https://github.com/valhalla/valhalla/blob/master/COPYING
+servers:
+- url: https://valhalla1.openstreetmap.de
+security: []
+tags:
+- name: Tile
+paths:
+  /tile/{z}/{x}/{y}.mvt:
+    get:
+      operationId: tile
+      summary: /tile/{z}/{x}/{y}.mvt
+      description: Mapbox Vector Tile of the routing graph
+      parameters:
+      - name: z
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 0
+      - name: x
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 0
+      - name: y
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 0
+      - name: exclude_layers
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - edges
+            - nodes
+            - shortcuts
+            - access_restrictions
+      responses:
+        '200':
+          description: MVT binary tile
+        '400':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+      tags:
+      - Tile
+components:
+  responses:
+    Error:
+      description: Request error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error_code:
+                type: integer
+              error:
+                type: string
+              status_code:
+                type: integer
+              status:
+                type: string
+    RateLimited:
+      description: 'Rate limit exceeded. The public service enforces a per-user limit of
+
+        1 request per second and a global limit of 100 requests per second.
+
+        The body is nginx''s default 429 HTML page.
+
+        '
+      content:
+        text/html:
+          schema:
+            type: string
