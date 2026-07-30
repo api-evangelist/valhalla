@@ -7,6 +7,18 @@ description: >-
   auto, bicycle, pedestrian, transit, truck, motorcycle, and motor scooter. It uses
   a tiled hierarchical data structure for efficient offline routing and regional
   extracts, with dynamic costing via a plugin architecture.
+accessModel:
+  pricing: free
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Free
+  confidence: medium
+  source:
+  - plans
+  generated: '2026-07-22'
+  method: derived
 image: https://valhalla.github.io/valhalla/images/valhalla.png
 tags:
   - Routing
@@ -24,219 +36,314 @@ modified: '2026-06-13'
 url: https://raw.githubusercontent.com/api-evangelist/valhalla/refs/heads/main/apis.yml
 specificationVersion: '0.19'
 apis:
-  - name: Valhalla Route API
-    description: >-
-      Turn-by-turn routing service that guides users between two or more points
-      by car, bike, foot, and multimodal combinations. Supports multiple costing
-      models including auto, bicycle, pedestrian, truck, motorcycle, motor scooter,
-      taxi, and multimodal (pedestrian + transit).
-    image: https://valhalla.github.io/valhalla/images/valhalla.png
-    humanURL: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
-    baseURL: https://valhalla1.openstreetmap.de
-    tags:
-      - Routing
-      - Navigation
-      - Turn-by-Turn
-      - Directions
-    properties:
-      - type: Documentation
-        url: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
-      - type: OpenAPI
-        url: https://valhalla.github.io/valhalla/api/openapi/
-    contact:
-      - FN: Valhalla Project
-        url: https://github.com/valhalla/valhalla
-        email: ''
-
-  - name: Valhalla Optimized Route API
-    description: >-
-      Solves the Travelling Salesman Problem (TSP) by computing an optimized path
-      through multiple input locations. The service reorders intermediate waypoints
-      for maximum efficiency, starting at the first and ending at the last location.
-      Supports auto, bicycle, and pedestrian costing models.
-    image: https://valhalla.github.io/valhalla/images/valhalla.png
-    humanURL: https://valhalla.github.io/valhalla/api/optimized/api-reference/
-    baseURL: https://valhalla1.openstreetmap.de
-    tags:
-      - Routing
-      - Optimization
-      - TSP
-      - Travelling Salesman
-    properties:
-      - type: Documentation
-        url: https://valhalla.github.io/valhalla/api/optimized/api-reference/
-      - type: OpenAPI
-        url: https://valhalla.github.io/valhalla/api/openapi/
-    contact:
-      - FN: Valhalla Project
-        url: https://github.com/valhalla/valhalla
-        email: ''
-
-  - name: Valhalla Matrix API
-    description: >-
-      Computes time and distance matrices between sets of origins and destinations.
-      Supports one-to-many, many-to-one, and many-to-many queries. Returns
-      null for unreachable location pairs. Useful for logistics, delivery
-      optimization, and accessibility analysis.
-    image: https://valhalla.github.io/valhalla/images/valhalla.png
-    humanURL: https://valhalla.github.io/valhalla/api/matrix/api-reference/
-    baseURL: https://valhalla1.openstreetmap.de
-    tags:
-      - Matrix
-      - Time-Distance
-      - Logistics
-      - Accessibility
-    properties:
-      - type: Documentation
-        url: https://valhalla.github.io/valhalla/api/matrix/api-reference/
-      - type: OpenAPI
-        url: https://valhalla.github.io/valhalla/api/openapi/
-    contact:
-      - FN: Valhalla Project
-        url: https://github.com/valhalla/valhalla
-        email: ''
-
-  - name: Valhalla Isochrone API
-    description: >-
-      Calculates isochrones (reachable areas within a given time or distance) and
-      isodistances from one or more locations. Returns GeoJSON polygons or lines.
-      Supports auto, bicycle, pedestrian, and multimodal costing. Output can also
-      be returned as GeoTIFF raster format.
-    image: https://valhalla.github.io/valhalla/images/valhalla.png
-    humanURL: https://valhalla.github.io/valhalla/api/isochrone/api-reference/
-    baseURL: https://valhalla1.openstreetmap.de
-    tags:
-      - Isochrones
-      - Reachability
-      - GeoJSON
-      - Accessibility
-    properties:
-      - type: Documentation
-        url: https://valhalla.github.io/valhalla/api/isochrone/api-reference/
-      - type: OpenAPI
-        url: https://valhalla.github.io/valhalla/api/openapi/
-    contact:
-      - FN: Valhalla Project
-        url: https://github.com/valhalla/valhalla
-        email: ''
-
-  - name: Valhalla Map Matching API
-    description: >-
-      Matches GPS traces and coordinate sequences to the road network mapped in
-      OpenStreetMap. Provides two modes: trace_route (turns a GPS trace into a
-      route with narrative instructions) and trace_attributes (returns edge and
-      node attributes matched along the trace). All requests should use HTTP POST.
-    image: https://valhalla.github.io/valhalla/images/valhalla.png
-    humanURL: https://valhalla.github.io/valhalla/api/map-matching/api-reference/
-    baseURL: https://valhalla1.openstreetmap.de
-    tags:
-      - Map Matching
-      - GPS
-      - Trace
-      - Navigation
-    properties:
-      - type: Documentation
-        url: https://valhalla.github.io/valhalla/api/map-matching/api-reference/
-      - type: OpenAPI
-        url: https://valhalla.github.io/valhalla/api/openapi/
-    contact:
-      - FN: Valhalla Project
-        url: https://github.com/valhalla/valhalla
-        email: ''
-
-  - name: Valhalla Elevation API
-    description: >-
-      Returns elevation data along a path or at specified locations. Accepts
-      coordinate arrays or encoded polylines and returns height values in meters
-      or feet. Supports cumulative distance ranges and configurable resampling
-      intervals along the path.
-    image: https://valhalla.github.io/valhalla/images/valhalla.png
-    humanURL: https://valhalla.github.io/valhalla/api/elevation/api-reference/
-    baseURL: https://valhalla1.openstreetmap.de
-    tags:
-      - Elevation
-      - Terrain
-      - Height
-      - Geospatial
-    properties:
-      - type: Documentation
-        url: https://valhalla.github.io/valhalla/api/elevation/api-reference/
-      - type: OpenAPI
-        url: https://valhalla.github.io/valhalla/api/openapi/
-    contact:
-      - FN: Valhalla Project
-        url: https://github.com/valhalla/valhalla
-        email: ''
-
-  - name: Valhalla Expansion API
-    description: >-
-      Returns a GeoJSON representation of the routing graph traversal from a
-      given location, showing the edges explored during shortest-path computation.
-      Useful for visualizing and debugging routing behavior. Note: this endpoint
-      is subject to stricter rate limiting on the public demo server.
-    image: https://valhalla.github.io/valhalla/images/valhalla.png
-    humanURL: https://valhalla.github.io/valhalla/api/expansion/api-reference/
-    baseURL: https://valhalla1.openstreetmap.de
-    tags:
-      - Expansion
-      - Graph
-      - GeoJSON
-      - Debugging
-    properties:
-      - type: Documentation
-        url: https://valhalla.github.io/valhalla/api/expansion/api-reference/
-      - type: OpenAPI
-        url: https://valhalla.github.io/valhalla/api/openapi/
-    contact:
-      - FN: Valhalla Project
-        url: https://github.com/valhalla/valhalla
-        email: ''
-
-  - name: Valhalla Locate API
-    description: >-
-      Provides detailed metadata about graph nodes and edges near a given
-      coordinate. Returns snapped node information, edge attributes, and road
-      network properties for analysis and debugging of routing graph data.
-    image: https://valhalla.github.io/valhalla/images/valhalla.png
-    humanURL: https://valhalla.github.io/valhalla/api/locate/api-reference/
-    baseURL: https://valhalla1.openstreetmap.de
-    tags:
-      - Locate
-      - Graph
-      - Metadata
-      - Debugging
-    properties:
-      - type: Documentation
-        url: https://valhalla.github.io/valhalla/api/locate/api-reference/
-      - type: OpenAPI
-        url: https://valhalla.github.io/valhalla/api/openapi/
-    contact:
-      - FN: Valhalla Project
-        url: https://github.com/valhalla/valhalla
-        email: ''
-
-  - name: Valhalla Status API
-    description: >-
-      Returns information about the running Valhalla server instance, including
-      tileset availability and configuration details. Useful for health checks
-      and monitoring the operational status of a Valhalla deployment.
-    image: https://valhalla.github.io/valhalla/images/valhalla.png
-    humanURL: https://valhalla.github.io/valhalla/
-    baseURL: https://valhalla1.openstreetmap.de
-    tags:
-      - Status
-      - Health
-      - Monitoring
-    properties:
-      - type: Documentation
-        url: https://valhalla.github.io/valhalla/
-      - type: OpenAPI
-        url: https://valhalla.github.io/valhalla/api/openapi/
-    contact:
-      - FN: Valhalla Project
-        url: https://github.com/valhalla/valhalla
-        email: ''
-
+- aid: valhalla:valhalla-expansion-api
+  name: Valhalla Expansion API
+  description: The Expansion API from Valhalla — 1 operation(s) for expansion.
+  humanURL: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  baseURL: https://valhalla1.openstreetmap.de
+  tags:
+  - Expansion
+  properties:
+  - type: OpenAPI
+    url: openapi/valhalla-expansion-api-openapi.yml
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/optimized/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/matrix/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/isochrone/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/map-matching/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/elevation/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/expansion/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/locate/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/
+- aid: valhalla:valhalla-height-api
+  name: Valhalla Height API
+  description: The Height API from Valhalla — 1 operation(s) for height.
+  humanURL: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  baseURL: https://valhalla1.openstreetmap.de
+  tags:
+  - Height
+  properties:
+  - type: OpenAPI
+    url: openapi/valhalla-height-api-openapi.yml
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/optimized/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/matrix/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/isochrone/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/map-matching/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/elevation/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/expansion/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/locate/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/
+- aid: valhalla:valhalla-isochrone-api
+  name: Valhalla Isochrone API
+  description: The Isochrone API from Valhalla — 1 operation(s) for isochrone.
+  humanURL: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  baseURL: https://valhalla1.openstreetmap.de
+  tags:
+  - Isochrone
+  properties:
+  - type: OpenAPI
+    url: openapi/valhalla-isochrone-api-openapi.yml
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/optimized/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/matrix/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/isochrone/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/map-matching/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/elevation/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/expansion/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/locate/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/
+- aid: valhalla:valhalla-locate-api
+  name: Valhalla Locate API
+  description: The Locate API from Valhalla — 1 operation(s) for locate.
+  humanURL: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  baseURL: https://valhalla1.openstreetmap.de
+  tags:
+  - Locate
+  properties:
+  - type: OpenAPI
+    url: openapi/valhalla-locate-api-openapi.yml
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/optimized/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/matrix/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/isochrone/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/map-matching/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/elevation/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/expansion/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/locate/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/
+- aid: valhalla:valhalla-optimized-route-api
+  name: Valhalla Optimized Route API
+  description: The Optimized Route API from Valhalla — 1 operation(s) for optimized route.
+  humanURL: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  baseURL: https://valhalla1.openstreetmap.de
+  tags:
+  - Optimized Route
+  properties:
+  - type: OpenAPI
+    url: openapi/valhalla-optimized-route-api-openapi.yml
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/optimized/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/matrix/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/isochrone/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/map-matching/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/elevation/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/expansion/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/locate/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/
+- aid: valhalla:valhalla-route-api
+  name: Valhalla Route API
+  description: The Route API from Valhalla — 1 operation(s) for route.
+  humanURL: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  baseURL: https://valhalla1.openstreetmap.de
+  tags:
+  - Route
+  properties:
+  - type: OpenAPI
+    url: openapi/valhalla-route-api-openapi.yml
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/optimized/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/matrix/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/isochrone/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/map-matching/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/elevation/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/expansion/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/locate/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/
+- aid: valhalla:valhalla-sources-to-targets-api
+  name: Valhalla Sources To Targets API
+  description: The Sources To Targets API from Valhalla — 1 operation(s) for sources to targets.
+  humanURL: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  baseURL: https://valhalla1.openstreetmap.de
+  tags:
+  - Sources To Targets
+  properties:
+  - type: OpenAPI
+    url: openapi/valhalla-sources-to-targets-api-openapi.yml
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/optimized/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/matrix/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/isochrone/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/map-matching/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/elevation/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/expansion/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/locate/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/
+- aid: valhalla:valhalla-status-api
+  name: Valhalla Status API
+  description: The Status API from Valhalla — 1 operation(s) for status.
+  humanURL: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  baseURL: https://valhalla1.openstreetmap.de
+  tags:
+  - Status
+  properties:
+  - type: OpenAPI
+    url: openapi/valhalla-status-api-openapi.yml
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/optimized/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/matrix/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/isochrone/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/map-matching/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/elevation/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/expansion/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/locate/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/
+- aid: valhalla:valhalla-tile-api
+  name: Valhalla Tile API
+  description: The Tile API from Valhalla — 1 operation(s) for tile.
+  humanURL: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  baseURL: https://valhalla1.openstreetmap.de
+  tags:
+  - Tile
+  properties:
+  - type: OpenAPI
+    url: openapi/valhalla-tile-api-openapi.yml
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/optimized/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/matrix/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/isochrone/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/map-matching/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/elevation/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/expansion/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/locate/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/
+- aid: valhalla:valhalla-trace-attributes-api
+  name: Valhalla Trace Attributes API
+  description: The Trace Attributes API from Valhalla — 1 operation(s) for trace attributes.
+  humanURL: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  baseURL: https://valhalla1.openstreetmap.de
+  tags:
+  - Trace Attributes
+  properties:
+  - type: OpenAPI
+    url: openapi/valhalla-trace-attributes-api-openapi.yml
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/optimized/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/matrix/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/isochrone/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/map-matching/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/elevation/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/expansion/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/locate/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/
+- aid: valhalla:valhalla-trace-route-api
+  name: Valhalla Trace Route API
+  description: The Trace Route API from Valhalla — 1 operation(s) for trace route.
+  humanURL: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  baseURL: https://valhalla1.openstreetmap.de
+  tags:
+  - Trace Route
+  properties:
+  - type: OpenAPI
+    url: openapi/valhalla-trace-route-api-openapi.yml
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/optimized/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/matrix/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/isochrone/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/map-matching/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/elevation/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/expansion/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/api/locate/api-reference/
+  - type: Documentation
+    url: https://valhalla.github.io/valhalla/
 common:
   - type: AgenticAccess
     url: agentic-access/valhalla-agentic-access.yml
