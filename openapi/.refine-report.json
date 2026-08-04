@@ -1,0 +1,34 @@
+{
+  "provider": "valhalla",
+  "sources": [
+    "valhalla-expansion-api-openapi.yml",
+    "valhalla-height-api-openapi.yml",
+    "valhalla-isochrone-api-openapi.yml",
+    "valhalla-locate-api-openapi.yml",
+    "valhalla-optimized-route-api-openapi.yml",
+    "valhalla-route-api-openapi.yml",
+    "valhalla-sources-to-targets-api-openapi.yml",
+    "valhalla-status-api-openapi.yml",
+    "valhalla-tile-api-openapi.yml",
+    "valhalla-trace-attributes-api-openapi.yml",
+    "valhalla-trace-route-api-openapi.yml"
+  ],
+  "outputs": [
+    "valhalla-expansion-api-openapi.yml",
+    "valhalla-height-api-openapi.yml",
+    "valhalla-isochrone-api-openapi.yml",
+    "valhalla-locate-api-openapi.yml",
+    "valhalla-optimized-route-api-openapi.yml",
+    "valhalla-route-api-openapi.yml",
+    "valhalla-sources-to-targets-api-openapi.yml",
+    "valhalla-status-api-openapi.yml",
+    "valhalla-tile-api-openapi.yml",
+    "valhalla-trace-attributes-api-openapi.yml",
+    "valhalla-trace-route-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
