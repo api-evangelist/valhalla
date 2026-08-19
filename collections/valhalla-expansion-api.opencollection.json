@@ -1,0 +1,33 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Valhalla Routing Expansion API",
+    "version": "3.x"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Expansion",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "/expansion",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://valhalla1.openstreetmap.de/expansion",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Edges visited during graph expansion (debug)"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

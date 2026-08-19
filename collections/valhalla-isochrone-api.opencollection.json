@@ -1,0 +1,33 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Valhalla Routing Expansion Isochrone API",
+    "version": "3.x"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Isochrone",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "/isochrone",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://valhalla1.openstreetmap.de/isochrone",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Reachability isochrone or isodistance. Supports `format=geotiff` for raster output (`image/tiff`)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

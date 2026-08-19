@@ -1,0 +1,44 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Valhalla Routing Expansion Locate API",
+    "version": "3.x"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Locate",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "/locate (GET)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://valhalla1.openstreetmap.de/locate"
+          },
+          "docs": "Graph metadata for nearby edges and nodes"
+        },
+        {
+          "info": {
+            "name": "/locate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://valhalla1.openstreetmap.de/locate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Graph metadata for nearby edges and nodes"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

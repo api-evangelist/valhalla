@@ -1,0 +1,286 @@
+{
+  "item": [
+    {
+      "id": "7c407ebb-5299-483a-b01b-d354e09f0824",
+      "name": "Tile",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "8b6990e9-2b0c-4428-9053-21e73b24464c",
+          "name": "/tile/{z}/{x}/{y}.mvt",
+          "request": {
+            "name": "/tile/{z}/{x}/{y}.mvt",
+            "description": {
+              "content": "Mapbox Vector Tile of the routing graph",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "tile",
+                ":z",
+                ":x",
+                "{{y}}.mvt"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "exclude_layers",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "exclude_layers",
+                  "value": "<string>"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "z",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "x",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "fa9c97e6-1435-4d02-ba17-0d1e425ee28f",
+              "name": "MVT binary tile",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tile",
+                    ":z",
+                    ":x",
+                    "{{y}}.mvt"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "exclude_layers",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "exclude_layers",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "z",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "x",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "28517c5b-9cbd-4b8f-926c-82ed421de140",
+              "name": "Request error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tile",
+                    ":z",
+                    ":x",
+                    "{{y}}.mvt"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "exclude_layers",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "exclude_layers",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "z",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "x",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_code\": 2946,\n  \"error\": \"string\",\n  \"status_code\": 3262,\n  \"status\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1907fa8c-ed74-4760-9eea-e42e1b08bce5",
+              "name": "Rate limit exceeded. The public service enforces a per-user limit of\n1 request per second and a global limit of 100 requests per second.\nThe body is nginx's default 429 HTML page.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tile",
+                    ":z",
+                    ":x",
+                    "{{y}}.mvt"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "exclude_layers",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "exclude_layers",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "z",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "x",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "text/html"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/html"
+                }
+              ],
+              "body": "string",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://valhalla1.openstreetmap.de",
+      "key": "baseUrl"
+    },
+    {
+      "disabled": false,
+      "description": {
+        "content": "(Required) ",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "<integer>",
+      "key": "y"
+    }
+  ],
+  "info": {
+    "_postman_id": "b68d84d1-675f-462b-b6ab-6b8ed41021e4",
+    "name": "Valhalla Routing Expansion Tile API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Open-source routing engine for OpenStreetMap data.\nAll POST endpoints accept JSON (some also protobuf with `Content-Type: application/x-protobuf`).\n",
+      "type": "text/plain"
+    }
+  }
+}

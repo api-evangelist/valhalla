@@ -1,0 +1,209 @@
+{
+  "item": [
+    {
+      "id": "592f20b5-ecd2-4b2f-9f17-35e5492bf132",
+      "name": "Height",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "8deafa06-d1aa-46f8-a054-37dbd81ed614",
+          "name": "/height",
+          "request": {
+            "name": "/height",
+            "description": {
+              "content": "Elevation at points or along a path",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "height"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"<string>\",\n  \"shape\": [\n    {\n      \"lat\": \"<number>\",\n      \"lon\": \"<number>\",\n      \"type\": \"break\",\n      \"name\": \"<string>\",\n      \"street\": \"<string>\",\n      \"date_time\": \"<string>\",\n      \"heading\": \"<integer>\",\n      \"heading_tolerance\": \"<integer>\",\n      \"preferred_layer\": \"<integer>\",\n      \"node_snap_tolerance\": \"<number>\",\n      \"minimum_reachability\": 50,\n      \"radius\": \"<integer>\",\n      \"search_cutoff\": \"<integer>\",\n      \"rank_candidates\": true,\n      \"preferred_side\": \"either\",\n      \"display_lat\": \"<number>\",\n      \"display_lon\": \"<number>\",\n      \"street_side_tolerance\": \"<integer>\",\n      \"street_side_max_distance\": \"<integer>\",\n      \"street_side_cutoff\": \"service_other\",\n      \"waiting\": \"<number>\",\n      \"search_filter\": {\n        \"min_road_class\": \"service_other\",\n        \"max_road_class\": \"motorway\",\n        \"exclude_tunnel\": false,\n        \"exclude_bridge\": false,\n        \"exclude_toll\": false,\n        \"exclude_ramp\": false,\n        \"exclude_ferry\": false,\n        \"exclude_closures\": true,\n        \"level\": \"<number>\"\n      }\n    }\n  ],\n  \"encoded_polyline\": \"<string>\",\n  \"shape_format\": \"polyline6\",\n  \"range\": false,\n  \"height_precision\": 0,\n  \"resample_distance\": \"<number>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7fad8719-4f1c-4ca1-a6e3-a3f2fcbf7519",
+              "name": "Elevation result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "height"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"<string>\",\n  \"shape\": [\n    {\n      \"lat\": 58.41056943754077,\n      \"lon\": -157.0417891725728,\n      \"type\": \"break\",\n      \"name\": \"string\",\n      \"street\": \"string\",\n      \"date_time\": \"string\",\n      \"heading\": 331,\n      \"heading_tolerance\": 5061,\n      \"preferred_layer\": 6331,\n      \"node_snap_tolerance\": 5890.779518765791,\n      \"minimum_reachability\": 50,\n      \"radius\": 9693,\n      \"search_cutoff\": 7967,\n      \"rank_candidates\": true,\n      \"preferred_side\": \"opposite\",\n      \"display_lat\": -49.70971357616733,\n      \"display_lon\": -102.6545434468554,\n      \"street_side_tolerance\": 3857,\n      \"street_side_max_distance\": 815,\n      \"street_side_cutoff\": \"primary\",\n      \"waiting\": 7361.42790039438,\n      \"search_filter\": {\n        \"min_road_class\": \"primary\",\n        \"max_road_class\": \"primary\",\n        \"exclude_tunnel\": false,\n        \"exclude_bridge\": false,\n        \"exclude_toll\": false,\n        \"exclude_ramp\": false,\n        \"exclude_ferry\": false,\n        \"exclude_closures\": true,\n        \"level\": 7892.977772536138\n      }\n    }\n  ],\n  \"encoded_polyline\": \"<string>\",\n  \"shape_format\": \"polyline6\",\n  \"range\": false,\n  \"height_precision\": 0,\n  \"resample_distance\": \"<number>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"externalValue\": \"./examples/height.json\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a3140850-aca3-4a4f-ab07-07b50d8f5fb3",
+              "name": "Request error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "height"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"<string>\",\n  \"shape\": [\n    {\n      \"lat\": 58.41056943754077,\n      \"lon\": -157.0417891725728,\n      \"type\": \"break\",\n      \"name\": \"string\",\n      \"street\": \"string\",\n      \"date_time\": \"string\",\n      \"heading\": 331,\n      \"heading_tolerance\": 5061,\n      \"preferred_layer\": 6331,\n      \"node_snap_tolerance\": 5890.779518765791,\n      \"minimum_reachability\": 50,\n      \"radius\": 9693,\n      \"search_cutoff\": 7967,\n      \"rank_candidates\": true,\n      \"preferred_side\": \"opposite\",\n      \"display_lat\": -49.70971357616733,\n      \"display_lon\": -102.6545434468554,\n      \"street_side_tolerance\": 3857,\n      \"street_side_max_distance\": 815,\n      \"street_side_cutoff\": \"primary\",\n      \"waiting\": 7361.42790039438,\n      \"search_filter\": {\n        \"min_road_class\": \"primary\",\n        \"max_road_class\": \"primary\",\n        \"exclude_tunnel\": false,\n        \"exclude_bridge\": false,\n        \"exclude_toll\": false,\n        \"exclude_ramp\": false,\n        \"exclude_ferry\": false,\n        \"exclude_closures\": true,\n        \"level\": 7892.977772536138\n      }\n    }\n  ],\n  \"encoded_polyline\": \"<string>\",\n  \"shape_format\": \"polyline6\",\n  \"range\": false,\n  \"height_precision\": 0,\n  \"resample_distance\": \"<number>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_code\": 3855,\n  \"error\": \"string\",\n  \"status_code\": 5350,\n  \"status\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "acb9c52e-1f6a-4e27-a64a-dd0ad118a95b",
+              "name": "Rate limit exceeded. The public service enforces a per-user limit of\n1 request per second and a global limit of 100 requests per second.\nThe body is nginx's default 429 HTML page.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "height"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "text/html"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"<string>\",\n  \"shape\": [\n    {\n      \"lat\": 58.41056943754077,\n      \"lon\": -157.0417891725728,\n      \"type\": \"break\",\n      \"name\": \"string\",\n      \"street\": \"string\",\n      \"date_time\": \"string\",\n      \"heading\": 331,\n      \"heading_tolerance\": 5061,\n      \"preferred_layer\": 6331,\n      \"node_snap_tolerance\": 5890.779518765791,\n      \"minimum_reachability\": 50,\n      \"radius\": 9693,\n      \"search_cutoff\": 7967,\n      \"rank_candidates\": true,\n      \"preferred_side\": \"opposite\",\n      \"display_lat\": -49.70971357616733,\n      \"display_lon\": -102.6545434468554,\n      \"street_side_tolerance\": 3857,\n      \"street_side_max_distance\": 815,\n      \"street_side_cutoff\": \"primary\",\n      \"waiting\": 7361.42790039438,\n      \"search_filter\": {\n        \"min_road_class\": \"primary\",\n        \"max_road_class\": \"primary\",\n        \"exclude_tunnel\": false,\n        \"exclude_bridge\": false,\n        \"exclude_toll\": false,\n        \"exclude_ramp\": false,\n        \"exclude_ferry\": false,\n        \"exclude_closures\": true,\n        \"level\": 7892.977772536138\n      }\n    }\n  ],\n  \"encoded_polyline\": \"<string>\",\n  \"shape_format\": \"polyline6\",\n  \"range\": false,\n  \"height_precision\": 0,\n  \"resample_distance\": \"<number>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/html"
+                }
+              ],
+              "body": "string",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://valhalla1.openstreetmap.de",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "c0fe6a76-a9c0-4749-b3d9-97721303dc9c",
+    "name": "Valhalla Routing Expansion Height API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Open-source routing engine for OpenStreetMap data.\nAll POST endpoints accept JSON (some also protobuf with `Content-Type: application/x-protobuf`).\n",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Valhalla Routing Expansion Height API",
+    "version": "3.x"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Height",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "/height",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://valhalla1.openstreetmap.de/height",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Elevation at points or along a path"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

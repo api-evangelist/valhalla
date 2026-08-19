@@ -1,0 +1,51 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Valhalla Routing Expansion Tile API",
+    "version": "3.x"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Tile",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "/tile/{z}/{x}/{y}.mvt",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://valhalla1.openstreetmap.de/tile/:z/:x/:y.mvt",
+            "params": [
+              {
+                "name": "z",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "x",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "y",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "exclude_layers",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Mapbox Vector Tile of the routing graph"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,33 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Valhalla Routing Expansion Optimized Route API",
+    "version": "3.x"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Optimized Route",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "/optimized_route",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://valhalla1.openstreetmap.de/optimized_route",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Optimized (TSP) route"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

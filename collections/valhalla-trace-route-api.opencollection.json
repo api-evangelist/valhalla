@@ -1,0 +1,33 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Valhalla Routing Expansion Trace Route API",
+    "version": "3.x"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Trace Route",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "/trace_route",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://valhalla1.openstreetmap.de/trace_route",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Map-matched turn-by-turn route"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

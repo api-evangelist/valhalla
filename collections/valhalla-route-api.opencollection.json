@@ -1,0 +1,33 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Valhalla Routing Expansion Route API",
+    "version": "3.x"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Route",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "/route",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://valhalla1.openstreetmap.de/route",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Turn-by-turn route"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

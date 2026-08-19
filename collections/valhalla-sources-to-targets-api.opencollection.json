@@ -1,0 +1,33 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Valhalla Routing Expansion Sources To Targets API",
+    "version": "3.x"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Sources To Targets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "/sources_to_targets",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://valhalla1.openstreetmap.de/sources_to_targets",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Time-distance matrix"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
