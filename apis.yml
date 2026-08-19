@@ -34,7 +34,7 @@ tags:
 created: '2026-06-13'
 modified: '2026-06-13'
 url: https://raw.githubusercontent.com/api-evangelist/valhalla/refs/heads/main/apis.yml
-specificationVersion: '0.19'
+specificationVersion: '0.23'
 apis:
 - aid: valhalla:valhalla-expansion-api
   name: Valhalla Expansion API
