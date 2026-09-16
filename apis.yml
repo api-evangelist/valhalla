@@ -1,12 +1,10 @@
 name: Valhalla
-description: >-
-  Valhalla is an open-source routing engine and library suite for OpenStreetMap
-  data. It provides turn-by-turn navigation, isochrone computation, time-distance
-  matrix analysis, map matching, elevation sampling, optimized routing (TSP), and
-  graph expansion via a REST API. Valhalla supports multiple travel modes including
-  auto, bicycle, pedestrian, transit, truck, motorcycle, and motor scooter. It uses
-  a tiled hierarchical data structure for efficient offline routing and regional
-  extracts, with dynamic costing via a plugin architecture.
+description: Valhalla is an open-source routing engine and library suite for OpenStreetMap data. It provides
+  turn-by-turn navigation, isochrone computation, time-distance matrix analysis, map matching, elevation
+  sampling, optimized routing (TSP), and graph expansion via a REST API. Valhalla supports multiple travel
+  modes including auto, bicycle, pedestrian, transit, truck, motorcycle, and motor scooter. It uses a
+  tiled hierarchical data structure for efficient offline routing and regional extracts, with dynamic
+  costing via a plugin architecture.
 deliveryModel:
   model: saas
   open_source: false
@@ -33,29 +31,29 @@ accessModel:
   method: derived
 image: https://valhalla.github.io/valhalla/images/valhalla.png
 tags:
-  - Routing
-  - Navigation
-  - OpenStreetMap
-  - Mapping
-  - Geospatial
-  - Directions
-  - Isochrones
-  - Travel
-  - Transportation
-  - Open-Source
+- Routing
+- Navigation
+- OpenStreetMap
+- Mapping
+- Geospatial
+- Directions
+- Isochrones
+- Travel
+- Transportation
+- Open-Source
 tags_raw:
-  - Routing
-  - Navigation
-  - OpenStreetMap
-  - Mapping
-  - Geospatial
-  - Directions
-  - Isochrones
-  - Travel
-  - Transportation
-  - Open Source
+- Routing
+- Navigation
+- OpenStreetMap
+- Mapping
+- Geospatial
+- Directions
+- Isochrones
+- Travel
+- Transportation
+- Open Source
 created: '2026-06-13'
-modified: '2026-06-13'
+modified: '2026-09-16'
 url: https://raw.githubusercontent.com/api-evangelist/valhalla/refs/heads/main/apis.yml
 specificationVersion: '0.23'
 apis:
@@ -368,27 +366,28 @@ apis:
   - type: Documentation
     url: https://valhalla.github.io/valhalla/
 common:
-  - type: AgenticAccess
-    url: agentic-access/valhalla-agentic-access.yml
-  - type: DomainSecurity
-    url: security/valhalla-domain-security.yml
-  - type: GitHub
-    url: https://github.com/valhalla/valhalla
-  - type: Documentation
-    url: https://valhalla.github.io/valhalla/
-  - type: OpenAPI
-    url: https://valhalla.github.io/valhalla/api/openapi/
-  - type: DemoServer
-    url: https://valhalla.openstreetmap.de/
-  - type: License
-    url: https://github.com/valhalla/valhalla/blob/master/LICENSE.md
-  - type: RateLimits
-    url: https://raw.githubusercontent.com/api-evangelist/valhalla/refs/heads/main/rate-limits/openstreetmap-de.yml
-  - type: Plans
-    url: https://raw.githubusercontent.com/api-evangelist/valhalla/refs/heads/main/plans/open-source.yml
-  - type: FinOps
-    url: https://raw.githubusercontent.com/api-evangelist/valhalla/refs/heads/main/finops/self-hosted.yml
-
+- type: Website
+  url: https://valhalla.github.io
+- type: AgenticAccess
+  url: agentic-access/valhalla-agentic-access.yml
+- type: DomainSecurity
+  url: security/valhalla-domain-security.yml
+- type: GitHub
+  url: https://github.com/valhalla/valhalla
+- type: Documentation
+  url: https://valhalla.github.io/valhalla/
+- type: OpenAPI
+  url: https://valhalla.github.io/valhalla/api/openapi/
+- type: DemoServer
+  url: https://valhalla.openstreetmap.de/
+- type: License
+  url: https://github.com/valhalla/valhalla/blob/master/LICENSE.md
+- type: RateLimits
+  url: https://raw.githubusercontent.com/api-evangelist/valhalla/refs/heads/main/rate-limits/openstreetmap-de.yml
+- type: Plans
+  url: https://raw.githubusercontent.com/api-evangelist/valhalla/refs/heads/main/plans/open-source.yml
+- type: FinOps
+  url: https://raw.githubusercontent.com/api-evangelist/valhalla/refs/heads/main/finops/self-hosted.yml
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
