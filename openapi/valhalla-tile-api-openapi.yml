@@ -1,12 +1,10 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Valhalla Routing Expansion Tile API
+  title: Valhalla Routing Tile API
   version: 3.x
   description: 'Open-source routing engine for OpenStreetMap data.
 
-    All POST endpoints accept JSON (some also protobuf with `Content-Type: application/x-protobuf`).
-
-    '
+    All POST endpoints accept JSON (some also protobuf with `Content-Type: application/x-protobuf`).'
   license:
     name: MIT
     url: https://github.com/valhalla/valhalla/blob/master/COPYING
@@ -62,6 +60,18 @@ paths:
       - Tile
 components:
   responses:
+    RateLimited:
+      description: 'Rate limit exceeded. The public service enforces a per-user limit of
+
+        1 request per second and a global limit of 100 requests per second.
+
+        The body is nginx''s default 429 HTML page.
+
+        '
+      content:
+        text/html:
+          schema:
+            type: string
     Error:
       description: Request error
       content:
@@ -77,15 +87,3 @@ components:
                 type: integer
               status:
                 type: string
-    RateLimited:
-      description: 'Rate limit exceeded. The public service enforces a per-user limit of
-
-        1 request per second and a global limit of 100 requests per second.
-
-        The body is nginx''s default 429 HTML page.
-
-        '
-      content:
-        text/html:
-          schema:
-            type: string

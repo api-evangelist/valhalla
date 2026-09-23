@@ -1,12 +1,10 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
   title: Valhalla Routing Expansion API
   version: 3.x
   description: 'Open-source routing engine for OpenStreetMap data.
 
-    All POST endpoints accept JSON (some also protobuf with `Content-Type: application/x-protobuf`).
-
-    '
+    All POST endpoints accept JSON (some also protobuf with `Content-Type: application/x-protobuf`).'
   license:
     name: MIT
     url: https://github.com/valhalla/valhalla/blob/master/COPYING
@@ -43,6 +41,50 @@ paths:
       - Expansion
 components:
   schemas:
+    LinearCostFactor:
+      description: 'Either an encoded-polyline form or a GeoJSON LineString feature. In case of passing GeoJSON, the factor must be passed as a feature property. Note that the geometry must align with shapes present in Valhalla''s graph.
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/ShapeFactorVariant'
+      - $ref: '#/components/schemas/GeoJsonFactorVariant'
+    GeoJsonFactorVariant:
+      type: object
+      required:
+      - type
+      - geometry
+      - properties
+      properties:
+        type:
+          type: string
+          enum:
+          - Feature
+        geometry:
+          type: object
+          required:
+          - type
+          - coordinates
+          properties:
+            type:
+              type: string
+              enum:
+              - LineString
+            coordinates:
+              type: array
+              items:
+                type: array
+                items:
+                  type: number
+                minItems: 2
+                maxItems: 2
+              description: Array of [lon, lat] positions.
+        properties:
+          type: object
+          required:
+          - factor
+          properties:
+            factor:
+              $ref: '#/components/schemas/Factor'
     ExpansionProperty:
       type: string
       description: 'GeoJSON property key to include in the expansion response. Each additional property increases output size by roughly 10%. By default an empty properties object is returned.
@@ -69,278 +111,106 @@ components:
         expansion_type: Whether this edge belongs to a forward or reverse expansion.
         flow_sources: Speed sources used (free_flow, constrained, predicted, current).
         travel_mode: Travel mode (drive, pedestrian, bicycle, transit).
-    OutputFormat:
+    Factor:
+      type: number
+      x-rad-min: 0.1
+      x-rad-max: 20
+      description: Cost multiplier applied to matched edges (min dependent on service configuration, default 1).
+    SpeedType:
       type: string
       enum:
-      - json
-      - gpx
-      - osrm
-      - pbf
-      - geotiff
-      - mvt
-      default: json
-      description: Not all formats are supported by all endpoints, e.g. `geotiff` is isochrone-only.
-      example: json
-    CostingOptions:
+      - current
+      - freeflow
+      - constrained
+      - predicted
+      description: 'A speed source that may be used when costing edges.
+
+        '
+      x-enumDescriptions:
+        current: The current live traffic speed
+        constrained: Daytime (7am–7pm) average speed stored on the edge
+        freeflow: Nighttime (7pm–7am) average speed stored on the edge
+        predicted: Historical per-edge speed profiles (5-min buckets over a week)
+    RoadClass:
+      type: string
+      enum:
+      - motorway
+      - trunk
+      - primary
+      - secondary
+      - tertiary
+      - unclassified
+      - residential
+      - service_other
+      example: primary
+    CostingType:
+      type: string
+      enum:
+      - auto
+      - bicycle
+      - pedestrian
+      - truck
+      - bus
+      - taxi
+      - motor_scooter
+      - motorcycle
+      - multimodal
+      - bikeshare
+      - auto_pedestrian
+      example: auto
+    SearchFilter:
       type: object
-      description: Costing options keyed by costing model name.
+      description: Optional filters to exclude candidate edges based on their attribution.
       properties:
-        auto:
-          $ref: '#/components/schemas/AutoCostingOptions'
-        bus:
-          $ref: '#/components/schemas/AutoCostingOptions'
-        taxi:
-          $ref: '#/components/schemas/AutoCostingOptions'
-        bicycle:
-          $ref: '#/components/schemas/BicycleCostingOptions'
-        pedestrian:
-          $ref: '#/components/schemas/PedestrianCostingOptions'
-        bikeshare:
-          $ref: '#/components/schemas/PedestrianCostingOptions'
-        truck:
-          $ref: '#/components/schemas/TruckCostingOptions'
-        motorcycle:
-          $ref: '#/components/schemas/MotorcycleCostingOptions'
-        motor_scooter:
-          $ref: '#/components/schemas/MotorScooterCostingOptions'
-        multimodal:
-          $ref: '#/components/schemas/TransitCostingOptions'
-        transit:
-          $ref: '#/components/schemas/TransitCostingOptions'
-    Location:
-      type: object
-      required:
-      - lat
-      - lon
-      properties:
-        lat:
-          type: number
-          minimum: -90
-          maximum: 90
-        lon:
-          type: number
-          minimum: -180
-          maximum: 180
-        type:
-          type: string
-          enum:
-          - break
-          - through
-          - via
-          - break_through
-          example: break
-          default: break
-          description: First and last location are always forced to `break`.
-          x-enumDescriptions:
-            break: Stop here; starts or ends a route leg. Allows U-turns.
-            through: Pass through without stopping. No U-turn; keeps direction of travel.
-            via: Waypoint with a maneuver instruction but no leg-break. Allows U-turns.
-            break_through: Like `break` but does not allow U-turns at the location.
-        name:
-          type: string
-          description: Label echoed in the response.
-        street:
-          type: string
-          description: Street address hint for snapping.
-        date_time:
-          type: string
-          description: Per-location ISO 8601 datetime override, in the format `YYYY-MM-DDTHH:MM`, e.g. `2016-07-03T08:06`.
-        heading:
-          type: integer
-          minimum: 0
-          maximum: 360
-          description: Preferred approach heading in degrees.
-        heading_tolerance:
-          type: integer
-          x-rad-min: 0
-          x-rad-max: 180
-          x-rad-default: 60
-          description: 'How close in degrees a given street''s angle must be in order for it to be considered as in the same direction of the `heading` parameter.  The default value is service configuration dependent (60 by default).
-
-            '
-        preferred_layer:
-          type: integer
-          x-rad-min: -1
-          x-rad-max: 5
-          description: 'If set, edges whose layer does not match this value are discarded from candidate search. Note that this is a "soft" filter, meaning if no other candidates are found, Valhalla will fall back to including edges that did not match this filter.
-
-            '
-        node_snap_tolerance:
-          type: number
-          minimum: 0
-          x-rad-max: 100
-          x-rad-default: 5
-          description: Snap-to-node distance tolerance in meters. The default value is service dependent (5 by default).
-        minimum_reachability:
-          type: integer
-          minimum: 0
-          x-rad-max: 250
-          default: 50
-          description: Minimum number of reachable edges for a snap candidate. The default and max values are service configuration dependent (50 and 100 by default, respectively).
-        radius:
-          type: integer
-          minimum: 0
-          x-rad-max: 200
-          x-rad-default: 0
-          description: 'Candidate search radius in meters: all viable edge candidates within the radius are correlated. If none are found, the best  one outside the radius is correlated. The default is service dependent, and defaults to 0 (only the closest edge is considered as candidate). The max value is service configuration dependent (200 by default).
-
-            '
-        search_cutoff:
-          type: integer
-          minimum: 0
-          x-rad-min: 10000
-          x-rad-max: 100000
-          x-rad-default: 35000
-          description: Hard cutoff for candidate search in meters. Default is service configuration dependent (35000 by default).
-        rank_candidates:
+        min_road_class:
+          $ref: '#/components/schemas/RoadClass'
+          default: service_other
+          description: Lowest road class allowed.
+        max_road_class:
+          $ref: '#/components/schemas/RoadClass'
+          default: motorway
+          description: Highest road class allowed.
+        exclude_tunnel:
+          type: boolean
+          default: false
+          description: Whether to exclude roads marked as tunnels.
+        exclude_bridge:
+          type: boolean
+          default: false
+          description: Whether to exclude roads marked as bridges.
+        exclude_toll:
+          type: boolean
+          default: false
+          description: Whether to exclude roads marked as toll roads.
+        exclude_ramp:
+          type: boolean
+          default: false
+          description: Whether to exclude roads marked as ramps.
+        exclude_ferry:
+          type: boolean
+          default: false
+          description: Whether to exclude ferry routes.
+        exclude_closures:
           type: boolean
           default: true
-          description: Rank snap candidates by distance to input.
-        preferred_side:
-          type: string
-          default: either
-          example: opposite
-          enum:
-          - same
-          - opposite
-          - either
-          description: Preferred side of road to snap to.
-        display_lat:
+          description: When false, closed roads are allowed for this location.
+        level:
           type: number
-          minimum: -90
-          maximum: 90
-          description: 'Latitude of the map location in degrees. If provided the `lat` and `lon` parameters will be treated as the routing location and the  `display_lat` and `display_lon` will be used to determine the side of street. Both `display_lat` and `display_lon` must be provided and valid to achieve the desired effect.
-
-            '
-        display_lon:
-          type: number
-          minimum: -180
-          maximum: 180
-          description: 'Latitude of the map location in degrees. If provided the `lat` and `lon` parameters will be treated as the routing location and the  `display_lat` and `display_lon` will be used to determine the side of street. Both `display_lat` and `display_lon` must be provided and valid to achieve the desired effect.
-
-            '
-        street_side_tolerance:
-          type: integer
-          minimum: 0
-          x-rad-max: 50
-          x-rad-default: 5
-          description: 'If your input coordinate is less than this tolerance away from the edge centerline then we set your side of  street to none otherwise your side of street will be left or right depending on direction of travel. The default value is service configuration dependent (5 by default).
-
-            '
-        street_side_max_distance:
-          type: integer
-          minimum: 0
-          x-rad-max: 10000
-          x-rad-default: 1000
-          description: 'The max distance in meters that the input coordinates or display ll can be from the edge centerline for them to be used for determining the side of  street. Beyond this distance the side of street is set to none. The default value is service configuration dependent (1000 by default).
-
-            '
-        street_side_cutoff:
-          default: service_other
-          $ref: '#/components/schemas/RoadClass'
-          description: Ignore side preference for roads above this class.
-        waiting:
-          type: number
-          minimum: 0
-          x-rad-max: 10000
-          description: Waiting time in seconds at this stop (break/break_through only, not origin/destination).
-        search_filter:
-          $ref: '#/components/schemas/SearchFilter'
-          description: 'A set of optional filters to exclude candidate edges based on their attribution. Note that these are "hard" filters, i.e. it''s possible to end up  with no location candidates if these filters are too restricted.
-
-            '
-    ExpansionRequest:
-      allOf:
-      - $ref: '#/components/schemas/BaseRequest'
-      - type: object
-        required:
-        - locations
-        - costing
-        - action
-        properties:
-          locations:
-            type: array
-            minItems: 1
-            x-rad-max-items: 3
-            items:
-              $ref: '#/components/schemas/Location'
-          action:
-            type: string
-            enum:
-            - route
-            - isochrone
-            - sources_to_targets
-            description: Algorithm to expand.
-          expansion_properties:
-            type: array
-            items:
-              $ref: '#/components/schemas/ExpansionProperty'
-          skip_opposites:
-            type: boolean
-            default: false
-            description: Skip reverse-direction edges in the output.
-          dedupe:
-            type: boolean
-            default: false
-            description: Emit each edge only once.
-    FilterAction:
-      type: string
-      enum:
-      - include
-      - exclude
-      example: exclude
-      x-enumDescriptions:
-        include: Include only the listed Onestop IDs; everything else is excluded.
-        exclude: Exclude all listed Onestop IDs; everything else is included.
-    TransitFilterOptions:
+          description: If specified, will only consider edges that are on or traverse the passed floor level. Useful for indoor routing. It will set `search_cutoff` to a default value of 300 meters if no cutoff value is passed. Additionally, if a `search_cutoff` is passed, it will be clamped to 1000 meters.
+    DateTimeOptions:
       type: object
       properties:
-        action:
-          allOf:
-          - $ref: '#/components/schemas/FilterAction'
-          - description: Whether to include only the listed Onestop IDs or exclude them.
-        ids:
-          type: array
-          description: 'List of Onestop IDs to filter. The OneStop ID is simply the feeds''s directory name and the object''s GTFS ID separated by an underscore, i.e. a route with `route_id: AUR`  in `routes.txt` from the feed `NYC` would have the OneStop ID `NYC_AUR`, similar with operators/agencies.
-
-            '
-          items:
-            type: string
-            example: NYC_AUR
-    MotorcycleCostingOptions:
-      allOf:
-      - $ref: '#/components/schemas/BaseCostingOptions'
-      - type: object
-        description: Options for motorcycle costing. Parsed in src/sif/motorcyclecost.cc.
-        properties:
-          use_highways:
-            type: number
-            minimum: 0
-            maximum: 1
-            default: 0.5
-            description: 'This value indicates the willingness to take highways. This is a range of values between 0 and 1. Values near 0 attempt to avoid highways and values near 1 will favor highways. Note that sometimes highways are required to complete a route so values of 0 are not guaranteed to avoid highways entirely.
-
-              '
-          use_tolls:
-            type: number
-            minimum: 0
-            maximum: 1
-            default: 0.5
-            description: This value indicates the willingness to take roads with tolls. This is a range of values between 0 and 1. Values smaller than 0.5 attempt to avoid tolls and values greater than 0.5 will slightly favor them. The default value is 0.5, indicating no preference. Note that sometimes roads with tolls are required to complete a route so values of 0 are not guaranteed to avoid them entirely.
-          use_trails:
-            type: number
-            minimum: 0
-            maximum: 1
-            default: 0
-            description: 'A riders''s desire for adventure in their routes.  This is a range of values from 0 to 1, where 0 will avoid trails, tracks, unclassified or bad surfaces and values towards 1 will  tend to avoid major roads and route on secondary roads.
-
-              '
-          top_speed:
-            type: integer
-            minimum: 10
-            maximum: 252
-            default: 140
-            description: "Top speed the vehicle can go in km/h. Also used to avoid roads with higher speeds than this value. `top_speed` must be between 10 and 252 km/h. The default value is 140 km/h  for motorcycle. \n"
+        type:
+          type: integer
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          description: 0=current, 1=depart_at, 2=arrive_by, 3=invariant
+        value:
+          type: string
+          description: ISO 8601 local datetime string in the format `YYYY-MM-DDTHH:MM`, e.g. `2016-07-03T08:06`. Required for types 1, 2, 3.
     MotorScooterCostingOptions:
       allOf:
       - $ref: '#/components/schemas/BaseCostingOptions'
@@ -367,68 +237,120 @@ components:
             description: 'A rider''s propensity to use primary roads. This is a range of values from 0 to 1, where 0 attempts to avoid primary roads, and 1 indicates the rider is more comfortable riding on primary roads. Based on the `use_primary` factor, roads with certain classifications and higher speeds are penalized in an attempt to avoid them when finding  the best path.
 
               '
-    BicycleCostingOptions:
+    HardExclusions:
+      type: object
+      description: '**EXPERIMENTAL** — Hard exclusion options available for all costing methods. These options are not available by default; the server config must have `service_limits.allow_hard_exclusions` set to true in order to allow them. If not allowed and any of the hard excludes is set to true, the server will return a warning and ignore the hard excludes.
+
+        '
+      properties:
+        exclude_bridges:
+          type: boolean
+          default: false
+          description: 'This value indicates whether or not the path may include bridges. If `exclude_bridges` is set to true it is allowed to start and end with bridges, but is not allowed to have them in the middle of the route path, otherwise they are allowed. If set to true, it is highly plausible that no path will be found.
+
+            '
+        exclude_tunnels:
+          type: boolean
+          default: false
+          description: 'This value indicates whether or not the path may include tunnels. If `exclude_tunnels` is set to true it is allowed to start and end with tunnels, but is not allowed to have them in the middle of the route path, otherwise they are allowed. If set to true, it is highly plausible that no path will be found.
+
+            '
+        exclude_tolls:
+          type: boolean
+          default: false
+          description: 'This value indicates whether or not the path may include tolls. If `exclude_tolls` is set to true it is allowed to start and end with tolls, but is not allowed to have them in the middle of the route path, otherwise they are allowed. If set to true, it is highly plausible that no path will be found.
+
+            '
+        exclude_highways:
+          type: boolean
+          default: false
+          description: 'This value indicates whether or not the path may include highways. If `exclude_highways` is set to true it is allowed to start and end with highways, but is not allowed to have them in the middle of the route path, otherwise they are allowed. If set to true, it is highly plausible that no path will be found.
+
+            '
+        exclude_ferries:
+          type: boolean
+          default: false
+          description: 'This value indicates whether or not the path may include ferries. If `exclude_ferries` is set to true it is allowed to start and end with ferries, but is not allowed to have them in the middle of the route path, otherwise they are allowed. If set to true, it is highly plausible that no path will be found.
+
+            '
+    TruckCostingOptions:
       allOf:
       - $ref: '#/components/schemas/BaseCostingOptions'
       - type: object
-        description: Options for bicycle costing. Parsed in src/sif/bicyclecost.cc.
+        description: Options for truck costing. Parsed in src/sif/truckcost.cc. Dimension defaults differ from base.
         properties:
-          bicycle_type:
-            type: string
-            description: The type of bicycle. Affects the cycling speed and surface factors.
-            default: hybrid
-            enum:
-            - road
-            - hybrid
-            - city
-            - cross
-            - mountain
-            x-enumDescriptions:
-              road: A road-style bicycle with narrow tires that is generally lightweight and designed for speed on paved surfaces. Sets cycling_speed to 25 km/h.
-              hybrid: A bicycle made mostly for city riding or casual riding on roads and paths with good surfaces. Sets cycling_speed to 18 km/h.
-              city: A bicycle made mostly for city riding or casual riding on roads and paths with good surfaces. Sets cycling_speed to 18 km/h.
-              cross: A cyclo-cross bicycle, which is similar to a road bicycle but with wider tires suitable to rougher surfaces. Sets cycling_speed to 20 km/h.
-              mountain: A mountain bicycle suitable for most surfaces but generally heavier and slower on paved surfaces. Sets cycling_speed to 16 km/h.
-          cycling_speed:
-            type: number
-            minimum: 5
-            description: Cycling speed in km/h. Defaults depend on transport_type.
-          use_roads:
-            type: number
-            minimum: 0
-            maximum: 1
-            default: 0.25
-            description: 'A cyclist''s propensity to use roads alongside other vehicles. This is a range of values from 0 to 1, where 0 attempts to avoid roads and stay on cycleways and paths,  and 1 indicates the rider is more comfortable riding on roads. Based on the `use_roads` factor, roads with certain classifications and higher speeds are penalized in an attempt to avoid them when finding the best path.
-
-              '
-          use_hills:
-            type: number
-            minimum: 0
-            maximum: 1
-            default: 0.25
-            description: "A cyclist's desire to tackle hills in their routes. This is a range of values from 0 to 1, where 0 attempts to avoid hills and steep grades even if it means a  longer (time and distance) path, while 1 indicates the rider does not fear hills and steeper grades. Based on the `use_hills` factor, penalties are applied to roads  based on elevation change and grade. These penalties help the path avoid hilly roads in favor of flatter roads or less steep grades where available. Note that it is  not always possible to find alternate paths to avoid hills (for example when route locations are in mountainous areas).            \n"
-          avoid_bad_surfaces:
-            type: number
-            minimum: 0
-            maximum: 1
-            default: 0.25
-            description: 'This value is meant to represent how much a cyclist wants to avoid roads with poor surfaces relative to the bicycle type being used. This is a range of values  between 0 and 1. When the value is 0, there is no penalization of roads with different surface types; only bicycle speed on each surface is taken into account.  As the value approaches 1, roads with poor surfaces for the bike are penalized heavier so that they are only taken if they significantly improve travel time.  When the value is equal to 1, all bad surfaces are completely disallowed from routing, including start and end points.
-
-              '
-          bss_return_cost:
+          hazmat:
+            type: boolean
+            default: false
+            description: A value indicating if the truck is carrying hazardous materials.
+          low_class_penalty:
             type: number
             minimum: 0
             maximum: 43200
+            default: 30
+            description: A penalty in seconds which is applied when going to residential or service roads.
+          height:
+            type: number
+            default: 4.11
+            description: Vehicle height in meters for access restriction matching.
+          width:
+            type: number
+            default: 2.6
+            description: Vehicle width in meters for access restriction matching.
+          length:
+            type: number
+            default: 21.64
+            description: Vehicle length in meters for access restriction matching.
+          weight:
+            type: number
+            default: 21.77
+            description: Vehicle weight in metric tons for access restriction matching.
+          axle_load:
+            type: number
+            minimum: 0
+            maximum: 40
+            default: 9.07
+            description: Per-axle load in metric tons (default 20,000 lbs / ~9.07 t).
+          axle_count:
+            type: integer
+            minimum: 2
+            maximum: 20
+            default: 5
+            description: The axle count of the truck.
+          use_highways:
+            type: number
+            minimum: 0
+            maximum: 1
+            default: 0.5
+            description: 'This value indicates the willingness to take highways. This is a range of values between 0 and 1. Values near 0 attempt to avoid highways and values near 1 will favor highways. Note that sometimes highways are required to complete a route so values of 0 are not guaranteed to avoid highways entirely.
+
+              '
+          use_tolls:
+            type: number
+            minimum: 0
+            maximum: 1
+            default: 0.5
+            description: This value indicates the willingness to take roads with tolls. This is a range of values between 0 and 1. Values smaller than 0.5 attempt to avoid tolls and values greater than 0.5 will slightly favor them. The default value is 0.5, indicating no preference. Note that sometimes roads with tolls are required to complete a route so values of 0 are not guaranteed to avoid them entirely.
+          top_speed:
+            type: number
+            minimum: 10
+            maximum: 252
             default: 120
-            description: 'This value is useful when `bikeshare` is chosen as travel mode. It is meant to give the time will be used to return a rental bike. This value will be  displayed in the final directions and used to calculate the whole duration.
-
-              '
-          bss_rent_penalty:
+            description: "Top speed the vehicle can go in km/h. Also used to avoid roads with higher speeds than this value. `top_speed` must be between 10 and 252 km/h. The default value is 120 km/h  for truck. \n"
+          hgv_no_access_penalty:
             type: number
             minimum: 0
             maximum: 43200
+            default: 43200
+            description: 'A penalty applied to roads with no HGV/truck access. If set to a value less than 43200 seconds, HGV will be allowed on these roads and the penalty applies. Default  43200, i.e. trucks are not allowed.
+
+              '
+          use_truck_route:
+            type: number
+            minimum: 0
+            maximum: 1
             default: 0
-            description: 'This value is useful when `bikeshare` is chosen as travel mode. It is meant to describe the potential effort to return a rental bike.  This value won''t be displayed and used only inside of the algorithm.
+            description: 'This value is a range of values from 0 to 1, where 0 indicates a light preference for streets marked as truck routes,  and 1 indicates that streets not marked as truck routes should be avoided. This information is derived from  the `hgv=designated` tag. Note that even with values near 1, there is no guarantee the returned route will include  streets marked as truck routes.
 
               '
     BaseCostingOptions:
@@ -636,27 +558,21 @@ components:
             description: 'Which speed sources to consider for computing edge cost. Defaults to all available types. Predicted, current and freeflow additionally require `date_time` to be set.  If the array is left empty, or none of these sources are available, Valhalla will fall back to the default speed.
 
               '
-    DateTimeOptions:
+    TransitFilterOptions:
       type: object
       properties:
-        type:
-          type: integer
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-          description: 0=current, 1=depart_at, 2=arrive_by, 3=invariant
-        value:
-          type: string
-          description: ISO 8601 local datetime string in the format `YYYY-MM-DDTHH:MM`, e.g. `2016-07-03T08:06`. Required for types 1, 2, 3.
-    LinearCostFactor:
-      description: 'Either an encoded-polyline form or a GeoJSON LineString feature. In case of passing GeoJSON, the factor must be passed as a feature property. Note that the geometry must align with shapes present in Valhalla''s graph.
+        action:
+          allOf:
+          - $ref: '#/components/schemas/FilterAction'
+          - description: Whether to include only the listed Onestop IDs or exclude them.
+        ids:
+          type: array
+          description: 'List of Onestop IDs to filter. The OneStop ID is simply the feeds''s directory name and the object''s GTFS ID separated by an underscore, i.e. a route with `route_id: AUR`  in `routes.txt` from the feed `NYC` would have the OneStop ID `NYC_AUR`, similar with operators/agencies.
 
-        '
-      oneOf:
-      - $ref: '#/components/schemas/ShapeFactorVariant'
-      - $ref: '#/components/schemas/GeoJsonFactorVariant'
+            '
+          items:
+            type: string
+            example: NYC_AUR
     BaseRequest:
       type: object
       properties:
@@ -738,11 +654,366 @@ components:
           description: 'Customized cost factors that influence path finding, specified as an array of JSON objects. Objects can be either a GeoJSON linestring feature and a  `"factor"` property or a plain object with a "shape" key, whose value needs to be an encoded polyline (with 6 digit precision), and a "factor" key whose value  needs to be float. Valhalla will perform an edge walk (see the map matching documentation for more info) to match the geometry onto edges and use those  factors in costing. Edges with factors larger than 1 will be increasingly avoided, while edges with factors smaller than 1 increasingly favored.
 
             '
-    Factor:
-      type: number
-      x-rad-min: 0.1
-      x-rad-max: 20
-      description: Cost multiplier applied to matched edges (min dependent on service configuration, default 1).
+    CostingOptions:
+      type: object
+      description: Costing options keyed by costing model name.
+      properties:
+        auto:
+          $ref: '#/components/schemas/AutoCostingOptions'
+        bus:
+          $ref: '#/components/schemas/AutoCostingOptions'
+        taxi:
+          $ref: '#/components/schemas/AutoCostingOptions'
+        bicycle:
+          $ref: '#/components/schemas/BicycleCostingOptions'
+        pedestrian:
+          $ref: '#/components/schemas/PedestrianCostingOptions'
+        bikeshare:
+          $ref: '#/components/schemas/PedestrianCostingOptions'
+        truck:
+          $ref: '#/components/schemas/TruckCostingOptions'
+        motorcycle:
+          $ref: '#/components/schemas/MotorcycleCostingOptions'
+        motor_scooter:
+          $ref: '#/components/schemas/MotorScooterCostingOptions'
+        multimodal:
+          $ref: '#/components/schemas/TransitCostingOptions'
+        transit:
+          $ref: '#/components/schemas/TransitCostingOptions'
+    AutoCostingOptions:
+      allOf:
+      - $ref: '#/components/schemas/BaseCostingOptions'
+      - type: object
+        description: Options for auto, bus, and taxi costings. Parsed in src/sif/autocost.cc.
+        properties:
+          alley_factor:
+            type: number
+            minimum: 0.1
+            maximum: 100000
+            default: 1.0
+            description: 'A factor that modifies (multiplies) the cost when [alleys](https://wiki.openstreetmap.org/wiki/Tag:service%3Dalley) are encountered.  Auto routes generally want to avoid alleys or narrow service roads between buildings.
+
+              '
+          use_highways:
+            type: number
+            minimum: 0
+            maximum: 1
+            default: 0.5
+            description: 'This value indicates the willingness to take highways. This is a range of values between 0 and 1. Values near 0 attempt to avoid highways and values near 1 will  favor highways. Note that sometimes highways are required to complete a route so values of 0 are not guaranteed to avoid highways entirely.
+
+              '
+          use_tolls:
+            type: number
+            minimum: 0
+            maximum: 1
+            default: 0.5
+            description: 'This value indicates the willingness to take roads with tolls. This is a range of values between 0 and 1. Values smaller than 0.5 attempt to  avoid tolls and values greater than 0.5 will slightly favor them. A value of 0.5 indicates no preference. Note that sometimes roads with tolls are required to complete a  route so values of 0 are not guaranteed to avoid them entirely.
+
+              '
+          use_distance:
+            type: number
+            minimum: 0
+            maximum: 1
+            default: 0
+            description: "A factor that allows controlling the contribution of distance and time to the route costs. The value is in range between 0 and 1, where 0 only takes time into account  and 1 only distance. A factor of 0.5 will weigh them roughly equally.  \n"
+          restriction_probability:
+            type: integer
+            minimum: 0
+            maximum: 100
+            default: 100
+            description: Percentage chance to honour probabilistic access restrictions.
+          top_speed:
+            type: integer
+            minimum: 10
+            maximum: 252
+            default: 140
+            description: "Top speed the vehicle can go in km/h. Also used to avoid roads with higher speeds than this value (see speed_penalty_factor for more details). `top_speed` must be between 10 and 252 km/h. The default value is 140 km/h for auto, taxi and bus. \n"
+          include_hov2:
+            type: boolean
+            default: false
+            description: A boolean value which indicates the desire to include HOV roads with a 2-occupant requirement in the route when advantageous.
+          include_hov3:
+            type: boolean
+            default: false
+            description: A boolean value which indicates the desire to include HOV roads with a 3-occupant requirement in the route when advantageous.
+          include_hot:
+            type: boolean
+            default: false
+            description: A boolean value which indicates the desire to include tolled HOV roads which require the driver to pay a toll if the occupant requirement isn't met.
+          height:
+            type: number
+            default: 1.6
+            description: Vehicle height in meters for access restriction matching.
+          width:
+            type: number
+            default: 1.9
+            description: Vehicle width in meters for access restriction matching.
+          length:
+            type: number
+            default: 2.7
+            description: Vehicle length in meters for access restriction matching.
+          weight:
+            type: number
+            default: 0.8
+            description: Vehicle weight in metric tons for access restriction matching.
+    MotorcycleCostingOptions:
+      allOf:
+      - $ref: '#/components/schemas/BaseCostingOptions'
+      - type: object
+        description: Options for motorcycle costing. Parsed in src/sif/motorcyclecost.cc.
+        properties:
+          use_highways:
+            type: number
+            minimum: 0
+            maximum: 1
+            default: 0.5
+            description: 'This value indicates the willingness to take highways. This is a range of values between 0 and 1. Values near 0 attempt to avoid highways and values near 1 will favor highways. Note that sometimes highways are required to complete a route so values of 0 are not guaranteed to avoid highways entirely.
+
+              '
+          use_tolls:
+            type: number
+            minimum: 0
+            maximum: 1
+            default: 0.5
+            description: This value indicates the willingness to take roads with tolls. This is a range of values between 0 and 1. Values smaller than 0.5 attempt to avoid tolls and values greater than 0.5 will slightly favor them. The default value is 0.5, indicating no preference. Note that sometimes roads with tolls are required to complete a route so values of 0 are not guaranteed to avoid them entirely.
+          use_trails:
+            type: number
+            minimum: 0
+            maximum: 1
+            default: 0
+            description: 'A riders''s desire for adventure in their routes.  This is a range of values from 0 to 1, where 0 will avoid trails, tracks, unclassified or bad surfaces and values towards 1 will  tend to avoid major roads and route on secondary roads.
+
+              '
+          top_speed:
+            type: integer
+            minimum: 10
+            maximum: 252
+            default: 140
+            description: "Top speed the vehicle can go in km/h. Also used to avoid roads with higher speeds than this value. `top_speed` must be between 10 and 252 km/h. The default value is 140 km/h  for motorcycle. \n"
+    TransitCostingOptions:
+      allOf:
+      - $ref: '#/components/schemas/BaseCostingOptions'
+      - type: object
+        description: Options for multimodal and transit costing. Parsed in src/sif/transitcost.cc.
+        properties:
+          mode_factor:
+            type: number
+            minimum: 0.1
+            maximum: 100000
+            default: 1.0
+            description: "A factor which the cost of a transit edge will be multiplied with. \n"
+          wheelchair:
+            type: boolean
+            default: false
+            description: Require wheelchair-accessible transit.
+          bicycle:
+            type: boolean
+            default: false
+            description: Allow bicycle on transit.
+          use_bus:
+            type: number
+            minimum: 0
+            maximum: 1
+            default: 0.3
+            description: User's desire to use buses. Range of values from 0 (try to avoid buses) to 1 (strong preference for riding buses).
+          use_rail:
+            type: number
+            minimum: 0
+            maximum: 1
+            default: 0.6
+            description: User's desire to use rail/subway/metro. Range of values from 0 (try to avoid rail) to 1 (strong preference for riding rail).
+          use_transfers:
+            type: number
+            minimum: 0
+            maximum: 1
+            default: 0.3
+            description: User's desire to favor transfers. Range of values from 0 (try to avoid transfers) to 1 (totally comfortable with transfers).
+          transfer_cost:
+            type: number
+            minimum: 0
+            maximum: 43200
+            default: 15
+            description: Time cost (seconds) per transfer. Influences ETA.
+          transfer_penalty:
+            type: number
+            minimum: 0
+            maximum: 43200
+            default: 300
+            description: Additional penalty (seconds) per transfer. Does not influence ETA.
+          filters:
+            type: object
+            description: 'Filter routes or operators by Onestop ID. Each key takes an `action` (`include`/`exclude`) and a list of `ids`. Note: stop filtering is currently disabled.
+
+              '
+            properties:
+              operators:
+                $ref: '#/components/schemas/TransitFilterOptions'
+              routes:
+                $ref: '#/components/schemas/TransitFilterOptions'
+    ShapeFactorVariant:
+      type: object
+      required:
+      - shape
+      - factor
+      properties:
+        shape:
+          type: string
+          description: 'Polyline6-encoded shape. Shape may only cover edges subject to `service_limits.max_linear_cost_edges` (set in service config; 50000 by default).
+
+            '
+        factor:
+          $ref: '#/components/schemas/Factor'
+    FilterAction:
+      type: string
+      enum:
+      - include
+      - exclude
+      example: exclude
+      x-enumDescriptions:
+        include: Include only the listed Onestop IDs; everything else is excluded.
+        exclude: Exclude all listed Onestop IDs; everything else is included.
+    Location:
+      type: object
+      required:
+      - lat
+      - lon
+      properties:
+        lat:
+          type: number
+          minimum: -90
+          maximum: 90
+        lon:
+          type: number
+          minimum: -180
+          maximum: 180
+        type:
+          type: string
+          enum:
+          - break
+          - through
+          - via
+          - break_through
+          example: break
+          default: break
+          description: First and last location are always forced to `break`.
+          x-enumDescriptions:
+            break: Stop here; starts or ends a route leg. Allows U-turns.
+            through: Pass through without stopping. No U-turn; keeps direction of travel.
+            via: Waypoint with a maneuver instruction but no leg-break. Allows U-turns.
+            break_through: Like `break` but does not allow U-turns at the location.
+        name:
+          type: string
+          description: Label echoed in the response.
+        street:
+          type: string
+          description: Street address hint for snapping.
+        date_time:
+          type: string
+          description: Per-location ISO 8601 datetime override, in the format `YYYY-MM-DDTHH:MM`, e.g. `2016-07-03T08:06`.
+        heading:
+          type: integer
+          minimum: 0
+          maximum: 360
+          description: Preferred approach heading in degrees.
+        heading_tolerance:
+          type: integer
+          x-rad-min: 0
+          x-rad-max: 180
+          x-rad-default: 60
+          description: 'How close in degrees a given street''s angle must be in order for it to be considered as in the same direction of the `heading` parameter.  The default value is service configuration dependent (60 by default).
+
+            '
+        preferred_layer:
+          type: integer
+          x-rad-min: -1
+          x-rad-max: 5
+          description: 'If set, edges whose layer does not match this value are discarded from candidate search. Note that this is a "soft" filter, meaning if no other candidates are found, Valhalla will fall back to including edges that did not match this filter.
+
+            '
+        node_snap_tolerance:
+          type: number
+          minimum: 0
+          x-rad-max: 100
+          x-rad-default: 5
+          description: Snap-to-node distance tolerance in meters. The default value is service dependent (5 by default).
+        minimum_reachability:
+          type: integer
+          minimum: 0
+          x-rad-max: 250
+          default: 50
+          description: Minimum number of reachable edges for a snap candidate. The default and max values are service configuration dependent (50 and 100 by default, respectively).
+        radius:
+          type: integer
+          minimum: 0
+          x-rad-max: 200
+          x-rad-default: 0
+          description: 'Candidate search radius in meters: all viable edge candidates within the radius are correlated. If none are found, the best  one outside the radius is correlated. The default is service dependent, and defaults to 0 (only the closest edge is considered as candidate). The max value is service configuration dependent (200 by default).
+
+            '
+        search_cutoff:
+          type: integer
+          minimum: 0
+          x-rad-min: 10000
+          x-rad-max: 100000
+          x-rad-default: 35000
+          description: Hard cutoff for candidate search in meters. Default is service configuration dependent (35000 by default).
+        rank_candidates:
+          type: boolean
+          default: true
+          description: Rank snap candidates by distance to input.
+        preferred_side:
+          type: string
+          default: either
+          example: opposite
+          enum:
+          - same
+          - opposite
+          - either
+          description: Preferred side of road to snap to.
+        display_lat:
+          type: number
+          minimum: -90
+          maximum: 90
+          description: 'Latitude of the map location in degrees. If provided the `lat` and `lon` parameters will be treated as the routing location and the  `display_lat` and `display_lon` will be used to determine the side of street. Both `display_lat` and `display_lon` must be provided and valid to achieve the desired effect.
+
+            '
+        display_lon:
+          type: number
+          minimum: -180
+          maximum: 180
+          description: 'Latitude of the map location in degrees. If provided the `lat` and `lon` parameters will be treated as the routing location and the  `display_lat` and `display_lon` will be used to determine the side of street. Both `display_lat` and `display_lon` must be provided and valid to achieve the desired effect.
+
+            '
+        street_side_tolerance:
+          type: integer
+          minimum: 0
+          x-rad-max: 50
+          x-rad-default: 5
+          description: 'If your input coordinate is less than this tolerance away from the edge centerline then we set your side of  street to none otherwise your side of street will be left or right depending on direction of travel. The default value is service configuration dependent (5 by default).
+
+            '
+        street_side_max_distance:
+          type: integer
+          minimum: 0
+          x-rad-max: 10000
+          x-rad-default: 1000
+          description: 'The max distance in meters that the input coordinates or display ll can be from the edge centerline for them to be used for determining the side of  street. Beyond this distance the side of street is set to none. The default value is service configuration dependent (1000 by default).
+
+            '
+        street_side_cutoff:
+          default: service_other
+          $ref: '#/components/schemas/RoadClass'
+          description: Ignore side preference for roads above this class.
+        waiting:
+          type: number
+          minimum: 0
+          x-rad-max: 10000
+          description: Waiting time in seconds at this stop (break/break_through only, not origin/destination).
+        search_filter:
+          $ref: '#/components/schemas/SearchFilter'
+          description: 'A set of optional filters to exclude candidate edges based on their attribution. Note that these are "hard" filters, i.e. it''s possible to end up  with no location candidates if these filters are too restricted.
+
+            '
     PedestrianCostingOptions:
       allOf:
       - $ref: '#/components/schemas/BaseCostingOptions'
@@ -884,402 +1155,117 @@ components:
               description: 'This value is useful when `bikeshare` is chosen as travel mode. It is meant to describe the potential effort to rent a bike from a bike share station.  This value won''t be displayed and used only inside of the algorithm.
 
                 '
-    ShapeFactorVariant:
-      type: object
-      required:
-      - shape
-      - factor
-      properties:
-        shape:
-          type: string
-          description: 'Polyline6-encoded shape. Shape may only cover edges subject to `service_limits.max_linear_cost_edges` (set in service config; 50000 by default).
-
-            '
-        factor:
-          $ref: '#/components/schemas/Factor'
-    AutoCostingOptions:
+    BicycleCostingOptions:
       allOf:
       - $ref: '#/components/schemas/BaseCostingOptions'
       - type: object
-        description: Options for auto, bus, and taxi costings. Parsed in src/sif/autocost.cc.
+        description: Options for bicycle costing. Parsed in src/sif/bicyclecost.cc.
         properties:
-          alley_factor:
-            type: number
-            minimum: 0.1
-            maximum: 100000
-            default: 1.0
-            description: 'A factor that modifies (multiplies) the cost when [alleys](https://wiki.openstreetmap.org/wiki/Tag:service%3Dalley) are encountered.  Auto routes generally want to avoid alleys or narrow service roads between buildings.
-
-              '
-          use_highways:
-            type: number
-            minimum: 0
-            maximum: 1
-            default: 0.5
-            description: 'This value indicates the willingness to take highways. This is a range of values between 0 and 1. Values near 0 attempt to avoid highways and values near 1 will  favor highways. Note that sometimes highways are required to complete a route so values of 0 are not guaranteed to avoid highways entirely.
-
-              '
-          use_tolls:
-            type: number
-            minimum: 0
-            maximum: 1
-            default: 0.5
-            description: 'This value indicates the willingness to take roads with tolls. This is a range of values between 0 and 1. Values smaller than 0.5 attempt to  avoid tolls and values greater than 0.5 will slightly favor them. A value of 0.5 indicates no preference. Note that sometimes roads with tolls are required to complete a  route so values of 0 are not guaranteed to avoid them entirely.
-
-              '
-          use_distance:
-            type: number
-            minimum: 0
-            maximum: 1
-            default: 0
-            description: "A factor that allows controlling the contribution of distance and time to the route costs. The value is in range between 0 and 1, where 0 only takes time into account  and 1 only distance. A factor of 0.5 will weigh them roughly equally.  \n"
-          restriction_probability:
-            type: integer
-            minimum: 0
-            maximum: 100
-            default: 100
-            description: Percentage chance to honour probabilistic access restrictions.
-          top_speed:
-            type: integer
-            minimum: 10
-            maximum: 252
-            default: 140
-            description: "Top speed the vehicle can go in km/h. Also used to avoid roads with higher speeds than this value (see speed_penalty_factor for more details). `top_speed` must be between 10 and 252 km/h. The default value is 140 km/h for auto, taxi and bus. \n"
-          include_hov2:
-            type: boolean
-            default: false
-            description: A boolean value which indicates the desire to include HOV roads with a 2-occupant requirement in the route when advantageous.
-          include_hov3:
-            type: boolean
-            default: false
-            description: A boolean value which indicates the desire to include HOV roads with a 3-occupant requirement in the route when advantageous.
-          include_hot:
-            type: boolean
-            default: false
-            description: A boolean value which indicates the desire to include tolled HOV roads which require the driver to pay a toll if the occupant requirement isn't met.
-          height:
-            type: number
-            default: 1.6
-            description: Vehicle height in meters for access restriction matching.
-          width:
-            type: number
-            default: 1.9
-            description: Vehicle width in meters for access restriction matching.
-          length:
-            type: number
-            default: 2.7
-            description: Vehicle length in meters for access restriction matching.
-          weight:
-            type: number
-            default: 0.8
-            description: Vehicle weight in metric tons for access restriction matching.
-    GeoJsonFactorVariant:
-      type: object
-      required:
-      - type
-      - geometry
-      - properties
-      properties:
-        type:
-          type: string
-          enum:
-          - Feature
-        geometry:
-          type: object
-          required:
-          - type
-          - coordinates
-          properties:
-            type:
-              type: string
-              enum:
-              - LineString
-            coordinates:
-              type: array
-              items:
-                type: array
-                items:
-                  type: number
-                minItems: 2
-                maxItems: 2
-              description: Array of [lon, lat] positions.
-        properties:
-          type: object
-          required:
-          - factor
-          properties:
-            factor:
-              $ref: '#/components/schemas/Factor'
-    CostingType:
-      type: string
-      enum:
-      - auto
-      - bicycle
-      - pedestrian
-      - truck
-      - bus
-      - taxi
-      - motor_scooter
-      - motorcycle
-      - multimodal
-      - bikeshare
-      - auto_pedestrian
-      example: auto
-    SearchFilter:
-      type: object
-      description: Optional filters to exclude candidate edges based on their attribution.
-      properties:
-        min_road_class:
-          $ref: '#/components/schemas/RoadClass'
-          default: service_other
-          description: Lowest road class allowed.
-        max_road_class:
-          $ref: '#/components/schemas/RoadClass'
-          default: motorway
-          description: Highest road class allowed.
-        exclude_tunnel:
-          type: boolean
-          default: false
-          description: Whether to exclude roads marked as tunnels.
-        exclude_bridge:
-          type: boolean
-          default: false
-          description: Whether to exclude roads marked as bridges.
-        exclude_toll:
-          type: boolean
-          default: false
-          description: Whether to exclude roads marked as toll roads.
-        exclude_ramp:
-          type: boolean
-          default: false
-          description: Whether to exclude roads marked as ramps.
-        exclude_ferry:
-          type: boolean
-          default: false
-          description: Whether to exclude ferry routes.
-        exclude_closures:
-          type: boolean
-          default: true
-          description: When false, closed roads are allowed for this location.
-        level:
-          type: number
-          description: If specified, will only consider edges that are on or traverse the passed floor level. Useful for indoor routing. It will set `search_cutoff` to a default value of 300 meters if no cutoff value is passed. Additionally, if a `search_cutoff` is passed, it will be clamped to 1000 meters.
-    TransitCostingOptions:
-      allOf:
-      - $ref: '#/components/schemas/BaseCostingOptions'
-      - type: object
-        description: Options for multimodal and transit costing. Parsed in src/sif/transitcost.cc.
-        properties:
-          mode_factor:
-            type: number
-            minimum: 0.1
-            maximum: 100000
-            default: 1.0
-            description: "A factor which the cost of a transit edge will be multiplied with. \n"
-          wheelchair:
-            type: boolean
-            default: false
-            description: Require wheelchair-accessible transit.
-          bicycle:
-            type: boolean
-            default: false
-            description: Allow bicycle on transit.
-          use_bus:
-            type: number
-            minimum: 0
-            maximum: 1
-            default: 0.3
-            description: User's desire to use buses. Range of values from 0 (try to avoid buses) to 1 (strong preference for riding buses).
-          use_rail:
-            type: number
-            minimum: 0
-            maximum: 1
-            default: 0.6
-            description: User's desire to use rail/subway/metro. Range of values from 0 (try to avoid rail) to 1 (strong preference for riding rail).
-          use_transfers:
-            type: number
-            minimum: 0
-            maximum: 1
-            default: 0.3
-            description: User's desire to favor transfers. Range of values from 0 (try to avoid transfers) to 1 (totally comfortable with transfers).
-          transfer_cost:
-            type: number
-            minimum: 0
-            maximum: 43200
-            default: 15
-            description: Time cost (seconds) per transfer. Influences ETA.
-          transfer_penalty:
-            type: number
-            minimum: 0
-            maximum: 43200
-            default: 300
-            description: Additional penalty (seconds) per transfer. Does not influence ETA.
-          filters:
-            type: object
-            description: 'Filter routes or operators by Onestop ID. Each key takes an `action` (`include`/`exclude`) and a list of `ids`. Note: stop filtering is currently disabled.
-
-              '
-            properties:
-              operators:
-                $ref: '#/components/schemas/TransitFilterOptions'
-              routes:
-                $ref: '#/components/schemas/TransitFilterOptions'
-    SpeedType:
-      type: string
-      enum:
-      - current
-      - freeflow
-      - constrained
-      - predicted
-      description: 'A speed source that may be used when costing edges.
-
-        '
-      x-enumDescriptions:
-        current: The current live traffic speed
-        constrained: Daytime (7am–7pm) average speed stored on the edge
-        freeflow: Nighttime (7pm–7am) average speed stored on the edge
-        predicted: Historical per-edge speed profiles (5-min buckets over a week)
-    TruckCostingOptions:
-      allOf:
-      - $ref: '#/components/schemas/BaseCostingOptions'
-      - type: object
-        description: Options for truck costing. Parsed in src/sif/truckcost.cc. Dimension defaults differ from base.
-        properties:
-          hazmat:
-            type: boolean
-            default: false
-            description: A value indicating if the truck is carrying hazardous materials.
-          low_class_penalty:
-            type: number
-            minimum: 0
-            maximum: 43200
-            default: 30
-            description: A penalty in seconds which is applied when going to residential or service roads.
-          height:
-            type: number
-            default: 4.11
-            description: Vehicle height in meters for access restriction matching.
-          width:
-            type: number
-            default: 2.6
-            description: Vehicle width in meters for access restriction matching.
-          length:
-            type: number
-            default: 21.64
-            description: Vehicle length in meters for access restriction matching.
-          weight:
-            type: number
-            default: 21.77
-            description: Vehicle weight in metric tons for access restriction matching.
-          axle_load:
-            type: number
-            minimum: 0
-            maximum: 40
-            default: 9.07
-            description: Per-axle load in metric tons (default 20,000 lbs / ~9.07 t).
-          axle_count:
-            type: integer
-            minimum: 2
-            maximum: 20
-            default: 5
-            description: The axle count of the truck.
-          use_highways:
-            type: number
-            minimum: 0
-            maximum: 1
-            default: 0.5
-            description: 'This value indicates the willingness to take highways. This is a range of values between 0 and 1. Values near 0 attempt to avoid highways and values near 1 will favor highways. Note that sometimes highways are required to complete a route so values of 0 are not guaranteed to avoid highways entirely.
-
-              '
-          use_tolls:
-            type: number
-            minimum: 0
-            maximum: 1
-            default: 0.5
-            description: This value indicates the willingness to take roads with tolls. This is a range of values between 0 and 1. Values smaller than 0.5 attempt to avoid tolls and values greater than 0.5 will slightly favor them. The default value is 0.5, indicating no preference. Note that sometimes roads with tolls are required to complete a route so values of 0 are not guaranteed to avoid them entirely.
-          top_speed:
-            type: number
-            minimum: 10
-            maximum: 252
-            default: 120
-            description: "Top speed the vehicle can go in km/h. Also used to avoid roads with higher speeds than this value. `top_speed` must be between 10 and 252 km/h. The default value is 120 km/h  for truck. \n"
-          hgv_no_access_penalty:
-            type: number
-            minimum: 0
-            maximum: 43200
-            default: 43200
-            description: 'A penalty applied to roads with no HGV/truck access. If set to a value less than 43200 seconds, HGV will be allowed on these roads and the penalty applies. Default  43200, i.e. trucks are not allowed.
-
-              '
-          use_truck_route:
-            type: number
-            minimum: 0
-            maximum: 1
-            default: 0
-            description: 'This value is a range of values from 0 to 1, where 0 indicates a light preference for streets marked as truck routes,  and 1 indicates that streets not marked as truck routes should be avoided. This information is derived from  the `hgv=designated` tag. Note that even with values near 1, there is no guarantee the returned route will include  streets marked as truck routes.
-
-              '
-    HardExclusions:
-      type: object
-      description: '**EXPERIMENTAL** — Hard exclusion options available for all costing methods. These options are not available by default; the server config must have `service_limits.allow_hard_exclusions` set to true in order to allow them. If not allowed and any of the hard excludes is set to true, the server will return a warning and ignore the hard excludes.
-
-        '
-      properties:
-        exclude_bridges:
-          type: boolean
-          default: false
-          description: 'This value indicates whether or not the path may include bridges. If `exclude_bridges` is set to true it is allowed to start and end with bridges, but is not allowed to have them in the middle of the route path, otherwise they are allowed. If set to true, it is highly plausible that no path will be found.
-
-            '
-        exclude_tunnels:
-          type: boolean
-          default: false
-          description: 'This value indicates whether or not the path may include tunnels. If `exclude_tunnels` is set to true it is allowed to start and end with tunnels, but is not allowed to have them in the middle of the route path, otherwise they are allowed. If set to true, it is highly plausible that no path will be found.
-
-            '
-        exclude_tolls:
-          type: boolean
-          default: false
-          description: 'This value indicates whether or not the path may include tolls. If `exclude_tolls` is set to true it is allowed to start and end with tolls, but is not allowed to have them in the middle of the route path, otherwise they are allowed. If set to true, it is highly plausible that no path will be found.
-
-            '
-        exclude_highways:
-          type: boolean
-          default: false
-          description: 'This value indicates whether or not the path may include highways. If `exclude_highways` is set to true it is allowed to start and end with highways, but is not allowed to have them in the middle of the route path, otherwise they are allowed. If set to true, it is highly plausible that no path will be found.
-
-            '
-        exclude_ferries:
-          type: boolean
-          default: false
-          description: 'This value indicates whether or not the path may include ferries. If `exclude_ferries` is set to true it is allowed to start and end with ferries, but is not allowed to have them in the middle of the route path, otherwise they are allowed. If set to true, it is highly plausible that no path will be found.
-
-            '
-    RoadClass:
-      type: string
-      enum:
-      - motorway
-      - trunk
-      - primary
-      - secondary
-      - tertiary
-      - unclassified
-      - residential
-      - service_other
-      example: primary
-  responses:
-    RateLimited:
-      description: 'Rate limit exceeded. The public service enforces a per-user limit of
-
-        1 request per second and a global limit of 100 requests per second.
-
-        The body is nginx''s default 429 HTML page.
-
-        '
-      content:
-        text/html:
-          schema:
+          bicycle_type:
             type: string
+            description: The type of bicycle. Affects the cycling speed and surface factors.
+            default: hybrid
+            enum:
+            - road
+            - hybrid
+            - city
+            - cross
+            - mountain
+            x-enumDescriptions:
+              road: A road-style bicycle with narrow tires that is generally lightweight and designed for speed on paved surfaces. Sets cycling_speed to 25 km/h.
+              hybrid: A bicycle made mostly for city riding or casual riding on roads and paths with good surfaces. Sets cycling_speed to 18 km/h.
+              city: A bicycle made mostly for city riding or casual riding on roads and paths with good surfaces. Sets cycling_speed to 18 km/h.
+              cross: A cyclo-cross bicycle, which is similar to a road bicycle but with wider tires suitable to rougher surfaces. Sets cycling_speed to 20 km/h.
+              mountain: A mountain bicycle suitable for most surfaces but generally heavier and slower on paved surfaces. Sets cycling_speed to 16 km/h.
+          cycling_speed:
+            type: number
+            minimum: 5
+            description: Cycling speed in km/h. Defaults depend on transport_type.
+          use_roads:
+            type: number
+            minimum: 0
+            maximum: 1
+            default: 0.25
+            description: 'A cyclist''s propensity to use roads alongside other vehicles. This is a range of values from 0 to 1, where 0 attempts to avoid roads and stay on cycleways and paths,  and 1 indicates the rider is more comfortable riding on roads. Based on the `use_roads` factor, roads with certain classifications and higher speeds are penalized in an attempt to avoid them when finding the best path.
+
+              '
+          use_hills:
+            type: number
+            minimum: 0
+            maximum: 1
+            default: 0.25
+            description: "A cyclist's desire to tackle hills in their routes. This is a range of values from 0 to 1, where 0 attempts to avoid hills and steep grades even if it means a  longer (time and distance) path, while 1 indicates the rider does not fear hills and steeper grades. Based on the `use_hills` factor, penalties are applied to roads  based on elevation change and grade. These penalties help the path avoid hilly roads in favor of flatter roads or less steep grades where available. Note that it is  not always possible to find alternate paths to avoid hills (for example when route locations are in mountainous areas).            \n"
+          avoid_bad_surfaces:
+            type: number
+            minimum: 0
+            maximum: 1
+            default: 0.25
+            description: 'This value is meant to represent how much a cyclist wants to avoid roads with poor surfaces relative to the bicycle type being used. This is a range of values  between 0 and 1. When the value is 0, there is no penalization of roads with different surface types; only bicycle speed on each surface is taken into account.  As the value approaches 1, roads with poor surfaces for the bike are penalized heavier so that they are only taken if they significantly improve travel time.  When the value is equal to 1, all bad surfaces are completely disallowed from routing, including start and end points.
+
+              '
+          bss_return_cost:
+            type: number
+            minimum: 0
+            maximum: 43200
+            default: 120
+            description: 'This value is useful when `bikeshare` is chosen as travel mode. It is meant to give the time will be used to return a rental bike. This value will be  displayed in the final directions and used to calculate the whole duration.
+
+              '
+          bss_rent_penalty:
+            type: number
+            minimum: 0
+            maximum: 43200
+            default: 0
+            description: 'This value is useful when `bikeshare` is chosen as travel mode. It is meant to describe the potential effort to return a rental bike.  This value won''t be displayed and used only inside of the algorithm.
+
+              '
+    ExpansionRequest:
+      allOf:
+      - $ref: '#/components/schemas/BaseRequest'
+      - type: object
+        required:
+        - locations
+        - costing
+        - action
+        properties:
+          locations:
+            type: array
+            minItems: 1
+            x-rad-max-items: 3
+            items:
+              $ref: '#/components/schemas/Location'
+          action:
+            type: string
+            enum:
+            - route
+            - isochrone
+            - sources_to_targets
+            description: Algorithm to expand.
+          expansion_properties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ExpansionProperty'
+          skip_opposites:
+            type: boolean
+            default: false
+            description: Skip reverse-direction edges in the output.
+          dedupe:
+            type: boolean
+            default: false
+            description: Emit each edge only once.
+    OutputFormat:
+      type: string
+      enum:
+      - json
+      - gpx
+      - osrm
+      - pbf
+      - geotiff
+      - mvt
+      default: json
+      description: Not all formats are supported by all endpoints, e.g. `geotiff` is isochrone-only.
+      example: json
+  responses:
     Error:
       description: Request error
       content:
@@ -1295,3 +1281,15 @@ components:
                 type: integer
               status:
                 type: string
+    RateLimited:
+      description: 'Rate limit exceeded. The public service enforces a per-user limit of
+
+        1 request per second and a global limit of 100 requests per second.
+
+        The body is nginx''s default 429 HTML page.
+
+        '
+      content:
+        text/html:
+          schema:
+            type: string

@@ -1,17 +1,7 @@
 {
   "provider": "valhalla",
   "sources": [
-    "valhalla-expansion-api-openapi.yml",
-    "valhalla-height-api-openapi.yml",
-    "valhalla-isochrone-api-openapi.yml",
-    "valhalla-locate-api-openapi.yml",
-    "valhalla-optimized-route-api-openapi.yml",
-    "valhalla-route-api-openapi.yml",
-    "valhalla-sources-to-targets-api-openapi.yml",
-    "valhalla-status-api-openapi.yml",
-    "valhalla-tile-api-openapi.yml",
-    "valhalla-trace-attributes-api-openapi.yml",
-    "valhalla-trace-route-api-openapi.yml"
+    "_original/openapi.yaml"
   ],
   "outputs": [
     "valhalla-expansion-api-openapi.yml",
@@ -29,6 +19,45 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "openapi.yaml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "openapi.yaml: tagged paths POST /route -> Route",
+    "openapi.yaml: tagged paths POST /optimized_route -> Optimized Route",
+    "openapi.yaml: tagged paths POST /sources_to_targets -> Sources To Targets",
+    "openapi.yaml: tagged paths POST /isochrone -> Isochrone",
+    "openapi.yaml: tagged paths POST /trace_route -> Trace Route",
+    "openapi.yaml: tagged paths POST /trace_attributes -> Trace Attributes",
+    "openapi.yaml: tagged paths POST /height -> Height",
+    "openapi.yaml: tagged paths GET /locate -> Locate",
+    "openapi.yaml: tagged paths POST /locate -> Locate",
+    "openapi.yaml: tagged paths POST /expansion -> Expansion",
+    "openapi.yaml: tagged paths GET /status -> Status",
+    "openapi.yaml: tagged paths GET /tile/{z}/{x}/{y}.mvt -> Tile",
+    "openapi.yaml: declared missing tag: Expansion",
+    "openapi.yaml: declared missing tag: Height",
+    "openapi.yaml: declared missing tag: Isochrone",
+    "openapi.yaml: declared missing tag: Locate",
+    "openapi.yaml: declared missing tag: Optimized Route",
+    "openapi.yaml: declared missing tag: Route",
+    "openapi.yaml: declared missing tag: Sources To Targets",
+    "openapi.yaml: declared missing tag: Status",
+    "openapi.yaml: declared missing tag: Tile",
+    "openapi.yaml: declared missing tag: Trace Attributes",
+    "openapi.yaml: declared missing tag: Trace Route",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "valhalla-expansion-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "valhalla-height-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "valhalla-isochrone-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "valhalla-locate-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "valhalla-optimized-route-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "valhalla-route-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "valhalla-sources-to-targets-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "valhalla-status-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "valhalla-tile-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "valhalla-trace-attributes-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "valhalla-trace-route-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
