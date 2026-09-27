@@ -6,16 +6,21 @@ description: Valhalla is an open-source routing engine and library suite for Ope
   tiled hierarchical data structure for efficient offline routing and regional extracts, with dynamic
   costing via a plugin architecture.
 deliveryModel:
-  model: saas
-  open_source: false
+  model: unknown
+  license_evidence:
+    repo: valhalla/valhalla
+    spdx: NOASSERTION
+    stars: 6254
+  open_source: unknown
   commercial: true
   callable_host: true
-  label: Hosted service · you call their endpoint
-  confidence: high
+  label: Delivery model not determined — needs a product licence on record
+  confidence: low
   source:
   - openapi
   - pricing
-  generated: '2026-08-28'
+  - repository-unlicensed
+  generated: '2026-09-25'
   method: derived
 accessModel:
   pricing: free
@@ -40,7 +45,7 @@ tags:
 - Isochrones
 - Travel
 - Transportation
-- Open-Source
+- Open Source
 tags_raw:
 - Routing
 - Navigation
@@ -52,6 +57,7 @@ tags_raw:
 - Travel
 - Transportation
 - Open Source
+- Open-Source
 created: '2026-06-13'
 modified: '2026-09-16'
 url: https://raw.githubusercontent.com/api-evangelist/valhalla/refs/heads/main/apis.yml
