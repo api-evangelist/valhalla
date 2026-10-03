@@ -41,18 +41,6 @@ paths:
       - Height
 components:
   responses:
-    RateLimited:
-      description: 'Rate limit exceeded. The public service enforces a per-user limit of
-
-        1 request per second and a global limit of 100 requests per second.
-
-        The body is nginx''s default 429 HTML page.
-
-        '
-      content:
-        text/html:
-          schema:
-            type: string
     Error:
       description: Request error
       content:
@@ -68,7 +56,53 @@ components:
                 type: integer
               status:
                 type: string
+    RateLimited:
+      description: 'Rate limit exceeded. The public service enforces a per-user limit of
+
+        1 request per second and a global limit of 100 requests per second.
+
+        The body is nginx''s default 429 HTML page.
+
+        '
+      content:
+        text/html:
+          schema:
+            type: string
   schemas:
+    HeightRequest:
+      type: object
+      properties:
+        id:
+          type: string
+        shape:
+          type: array
+          minItems: 1
+          x-rad-max-items: 50
+          items:
+            $ref: '#/components/schemas/Location'
+          description: Points at which to query elevation. Mutually exclusive with encoded_polyline.
+        encoded_polyline:
+          type: string
+          description: Polyline6 (default) or polyline5 (with shape_format=polyline5) encoded shape.
+        shape_format:
+          $ref: '#/components/schemas/ShapeFormat'
+        range:
+          type: boolean
+          default: false
+          description: Return cumulative distance alongside elevation values.
+        height_precision:
+          type: integer
+          enum:
+          - 0
+          - 1
+          - 2
+          default: 0
+          description: Decimal places in elevation values.
+        resample_distance:
+          type: number
+          minimum: 0
+          x-rad-max: 100
+          description: Resample the shape at this interval in meters before querying elevation.
     RoadClass:
       type: string
       enum:
@@ -130,40 +164,6 @@ components:
       description: Not all formats are supported by all endpoints, e.g. `no_shape` is not valid for isochrone.
       default: polyline6
       example: polyline6
-    HeightRequest:
-      type: object
-      properties:
-        id:
-          type: string
-        shape:
-          type: array
-          minItems: 1
-          x-rad-max-items: 50
-          items:
-            $ref: '#/components/schemas/Location'
-          description: Points at which to query elevation. Mutually exclusive with encoded_polyline.
-        encoded_polyline:
-          type: string
-          description: Polyline6 (default) or polyline5 (with shape_format=polyline5) encoded shape.
-        shape_format:
-          $ref: '#/components/schemas/ShapeFormat'
-        range:
-          type: boolean
-          default: false
-          description: Return cumulative distance alongside elevation values.
-        height_precision:
-          type: integer
-          enum:
-          - 0
-          - 1
-          - 2
-          default: 0
-          description: Decimal places in elevation values.
-        resample_distance:
-          type: number
-          minimum: 0
-          x-rad-max: 100
-          description: Resample the shape at this interval in meters before querying elevation.
     Location:
       type: object
       required:

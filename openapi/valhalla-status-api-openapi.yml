@@ -35,18 +35,6 @@ paths:
       - Status
 components:
   responses:
-    RateLimited:
-      description: 'Rate limit exceeded. The public service enforces a per-user limit of
-
-        1 request per second and a global limit of 100 requests per second.
-
-        The body is nginx''s default 429 HTML page.
-
-        '
-      content:
-        text/html:
-          schema:
-            type: string
     Error:
       description: Request error
       content:
@@ -62,3 +50,15 @@ components:
                 type: integer
               status:
                 type: string
+    RateLimited:
+      description: 'Rate limit exceeded. The public service enforces a per-user limit of
+
+        1 request per second and a global limit of 100 requests per second.
+
+        The body is nginx''s default 429 HTML page.
+
+        '
+      content:
+        text/html:
+          schema:
+            type: string
