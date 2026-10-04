@@ -103,18 +103,6 @@ components:
           minimum: 0
           x-rad-max: 100
           description: Resample the shape at this interval in meters before querying elevation.
-    RoadClass:
-      type: string
-      enum:
-      - motorway
-      - trunk
-      - primary
-      - secondary
-      - tertiary
-      - unclassified
-      - residential
-      - service_other
-      example: primary
     SearchFilter:
       type: object
       description: Optional filters to exclude candidate edges based on their attribution.
@@ -164,6 +152,18 @@ components:
       description: Not all formats are supported by all endpoints, e.g. `no_shape` is not valid for isochrone.
       default: polyline6
       example: polyline6
+    RoadClass:
+      type: string
+      enum:
+      - motorway
+      - trunk
+      - primary
+      - secondary
+      - tertiary
+      - unclassified
+      - residential
+      - service_other
+      example: primary
     Location:
       type: object
       required:
